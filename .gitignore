@@ -1,0 +1,17 @@
+# Ignore all .log files
+# *.log
+
+# Ignore all node_modules directories
+# node_modules/
+
+# Ignore all .env files
+.env
+
+# Ignore generated files
+.DS_Store
+
+# Ignore specific file
+# /path/to/file.txt
+
+# Ignore all files in a directory
+# directory_name/
