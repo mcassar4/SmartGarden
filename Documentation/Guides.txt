@@ -1,0 +1,10 @@
+ESP-IDF:
+    - Global Guide: https://docs.espressif.com/projects/esp-idf/en/stable/esp32c3/index.html
+    - How to Install in VSCode: https://marketplace.visualstudio.com/items?itemName=espressif.esp-idf-extension
+    - How to setup in Windows: https://docs.espressif.com/projects/esp-idf/en/stable/esp32c3/get-started/windows-setup.html#get-started-windows-first-steps
+    - How to setup in Linux/macos: https://docs.espressif.com/projects/esp-idf/en/stable/esp32c3/get-started/linux-macos-setup.html#get-started-linux-macos-first-steps
+    - Build Structure: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html
+Solar:
+    - 12V Device control: https://projecthub.arduino.cc/mdraber/tutorial-on-how-to-control-12v-devices-with-arduino-a77aeb
+    - Solar Cell Servo Control: https://www.sensingthecity.com/using-a-solar-cell-and-rechargeable-battery-to-power-a-servo-motor/
+    

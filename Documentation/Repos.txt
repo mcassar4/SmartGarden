@@ -1,0 +1,5 @@
+Heltec_Unofficial: https://github.com/ropg/heltec_esp32_lora_v3
+    - https://github.com/ropg/HotButton
+    - https://github.com/jgromes/RadioLib
+    - https://github.com/ThingPulse/esp8266-oled-ssd1306
+
