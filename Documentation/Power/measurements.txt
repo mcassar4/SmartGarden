@@ -1,1 +1,14 @@
 Measurements and calculations to help with part selection
+
+Valves:                                        @12V=
+Peak current draw when opening: 300mA               3.6W
+Average current draw when opening: 150mA            1.8W * (10s)/(3600s/h)
+Time to open: <10s
+Current draw while holding valve open: 50mA         0.6W * watering time
+**The blue lead is positive
+**These have a safety margin of ~1.5x
+
+ESP32:                                          @5V=
+Passive draw: 50mA                                  0.25W
+Sleep mode?
+Active?
