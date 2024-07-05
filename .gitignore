@@ -15,3 +15,5 @@
 
 # Ignore all files in a directory
 # directory_name/
+espGarden/.vscode/
+espGarden/build/
