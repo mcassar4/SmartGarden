@@ -1,0 +1,13 @@
+List of links to parts 
+
+Cells:
+
+Battery Management System:
+
+Solar Panel:
+
+MPPT:
+
+Buck Converter:
+
+Relays:

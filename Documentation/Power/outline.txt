@@ -1,0 +1,19 @@
+Outline of Power Group goals and strategy
+
+The smart garden system should run off-the-grid using a solar panel and battery backup to supplement on cloudy days.
+The battery should be sufficiently sized to allow the system to run for 4 days with no incoming charge, and the solar
+panel should be able to recharge the battery within a day of sunlight. 
+
+Two voltages are needed for the garden: 12V for the relays and 5V for the MCU. 
+High Voltage (12V):
+-As 3.6-4.2V 18650 cells are plentiful, lots of off-the-shelf battery management systems exist for
+varying sizes of packs. Using a 3S (3 series) pack of 4.2V 18650s gives a pack voltage of 12.6V,
+and based on a typical capacity of mAh, gives Wh of capacity.
+-Solar panels with 10s of watts are available on Amazon, and also run on 12V. 12V MPPT boards are
+widespread, like 12V BMSs.
+-The ball valves themselves open when 12V is applied. Relays will be needed to enable and disable
+this power based on signals from the MCU. Need to be careful to isolate MCU from any HV- an H-bridge
+or similar driver may be needed, I need to look deeper into relays.
+
+Low Voltage (5V):
+-A buck converter can be used to efficiently transform 12V to 5V for use by the microcontroller. 
