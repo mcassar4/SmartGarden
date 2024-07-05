@@ -2,7 +2,7 @@ Outline of Power Group goals and strategy
 
 The smart garden system should run off-the-grid using a solar panel and battery backup to supplement on cloudy days.
 The battery should be sufficiently sized to allow the system to run for 4 days with no incoming charge, and the solar
-panel should be able to recharge the battery within a day of sunlight. 
+panel should be able to recharge the battery within a day of sunlight. Focus on parts that ship faster over lower cost.
 
 Two voltages are needed for the garden: 12V for the relays and 5V for the MCU. 
 High Voltage (12V):
@@ -16,4 +16,4 @@ this power based on signals from the MCU. Need to be careful to isolate MCU from
 or similar driver may be needed, I need to look deeper into relays.
 
 Low Voltage (5V):
--A buck converter can be used to efficiently transform 12V to 5V for use by the microcontroller. 
+-A buck converter can be used to efficiently transform 12V to 5V for use by the microcontroller.
