@@ -2,8 +2,10 @@ List of links to parts
 
 Cells:
 
+/**/ Hold off on ordering these, I want to look into if a different battery chemistry is better /**/
 https://www.amazon.ca/ACEIRMC-Battery-Plastic-Storage-Connect/dp/B0986K3GVN/
 Battery Management System:
+/**/ Ditto /**/
 https://www.amazon.ca/JZK-Li-ion-Lithium-Battery-Protection/dp/B0B3J4LFXD/
 Solar Panel:
 https://www.amazon.ca/Renogy-Monocrystalline-Compact-Sprinkler-Applications/dp/B084MGS7KC/
