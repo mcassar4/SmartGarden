@@ -1,17 +1,20 @@
 List of links to parts 
 
-Cells:
+Battery:
+https://www.amazon.ca/ML7-12-BATTERY-Mighty-Battery-product/dp/B00K8V30D0/
+-Somewhat cheap battery with plenty of capacity (86Wh). Any lead-acid 12V battery over 4Ah will do
 
-/**/ Hold off on ordering these, I want to look into if a different battery chemistry is better /**/
-https://www.amazon.ca/ACEIRMC-Battery-Plastic-Storage-Connect/dp/B0986K3GVN/
-Battery Management System:
-/**/ Ditto /**/
-https://www.amazon.ca/JZK-Li-ion-Lithium-Battery-Protection/dp/B0B3J4LFXD/
+BMS/Solar Charge Controller:
+https://store-usa.arduino.cc/products/solar-power-manager-for-12v-lead-acid-battery
+Cheaper and with a screen, current preferred option.
+
+https://www.dfrobot.com/product-1795.html
+Combines solar MPPT, battery management, and power distribution all in one. Connects to an 18V
+solar panel and charges a lead acid battery, with 5V/5A and 12V/8A outputs alongside 5V USB.
+
 Solar Panel:
-https://www.amazon.ca/Renogy-Monocrystalline-Compact-Sprinkler-Applications/dp/B084MGS7KC/
-MPPT:
-https://www.amazon.ca/Controller-LiFePO4-Lithium-Charging-Loadspeaker/dp/B0B13RRGTK/
-Buck Converter:
-2x https://ca.robotshop.com/products/mini-360-dc-dc-buck-converter
+https://www.amazon.ca/Waveshare-Polycrystalline-Solar-Panel-18V/dp/B0BYZG68KT/
+Any >10W 18V panel is good, this one also has built in 5V but no battery backing (ofc)
+
 Relays:
 already bought

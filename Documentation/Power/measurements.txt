@@ -4,7 +4,7 @@ Valves:                                        @12V=
 Peak current draw when opening: 300mA               3.6W                    *Could be higher under load?
 Average current draw when opening: 150mA            1.8W * (10s)/(3600s/h)
 Time to open: <10s
-Current draw while holding valve open: 50mA         0.6W * watering time
+Current draw while holding valve open: 50mA         0.6W
 **The blue lead is positive
 **These have a safety margin of ~1.5x
 
@@ -13,10 +13,16 @@ Passive draw: 50mA                                  0.25W
 Sleep mode?
 Active?
 
-Relays:
-Closed:
-Open:
-  1:
-  2:
-  3:
-  4:
+Relays:                                         @5V=
+Closed: 0mA (duh)                                   0W
+Open:   81mA per relay                              0.405W/relay
+
+/////////////////
+Power use per day (assuming 1h/24h duty cycle)
+Valves: 4*(3.6*1/3600+1.8*10/3600+0.6*1) = 2.424Wh
+MCU:    1*(0.25*24)                      = 6Wh (assuming no sleep mode)
+Relays: 4*(0.405*1)                      = 1.62Wh
+
+Total:                                   = 10.1Wh
+Pack size for 4 days of battery:         = 40.4Wh
+Panel power to recharge in a day(8hr):   = 5W
