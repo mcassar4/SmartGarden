@@ -1,0 +1,45 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: lightsteelblue;
+  padding: 20px;
+  color: black;
+}
+
+.App-nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.App-nav li {
+  display: inline;
+  margin: 0 10px;
+}
+
+.App-nav a {
+  color: blue;
+  text-decoration: none;
+  
+}
+
+.App-main {
+  padding: 20px;
+}
+
+.App-main section {
+  margin: 20px 0;
+}
+
+.App-footer {
+  background-color: #282c34;
+  color: white;
+  padding: 10px;
+
+}
