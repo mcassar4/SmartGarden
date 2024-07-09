@@ -4,7 +4,7 @@ The smart garden system should run off-the-grid using a solar panel and battery 
 The battery should be sufficiently sized to allow the system to run for 4 days with no incoming charge, and the solar
 panel should be able to recharge the battery within a day of sunlight. Focus on parts that ship faster over lower cost.
 
-Two voltages are needed for the garden: 12V for the relays and 5V for the MCU. 
+Two voltages are needed for the garden: 12V for the valves and 5V for the MCUand relay coils. 
 High Voltage (12V):
 -For long term applications with varying charge times like solar, lithium batteries are not ideal.
 Lead acid batteries suit the application better, and have standard charge controllers available.
