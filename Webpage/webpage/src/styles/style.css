@@ -1,0 +1,54 @@
+.footer {
+    background-color: #282c34;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.App {
+    text-align: center;
+}
+
+.App-header {
+    background-color: lightsteelblue;
+    padding: 1px;
+    color: black;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.App-nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.App-nav li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.App-nav a {
+    color: blue;
+    text-decoration: none;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+.App-nav a:hover {
+    color: darkblue;
+}
+
+.App-main {
+    padding: 20px;
+}
+
+.App-main section {
+    margin: 20px 0;
+}
