@@ -28,7 +28,7 @@ extern "C" void app_main() {
 
     const char *ssid = "Test";
     const char *pass = "123456789";
-    wifi(ssid, pass);
+    wifi_init(ssid, pass);
     
 
     ssd1306_clear_screen(ssd1306_dev, 0x00);
