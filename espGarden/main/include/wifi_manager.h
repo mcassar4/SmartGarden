@@ -93,7 +93,7 @@ void wifi_task(void *pvParameters) {
     }
 }
 
-void wifi(const char *ssid, const char *password){
+void wifi_init(const char *ssid, const char *password){
     ESP_ERROR_CHECK(wifi_manager_init());
 
     ESP_ERROR_CHECK(wifi_manager_set_credentials(ssid, password));
