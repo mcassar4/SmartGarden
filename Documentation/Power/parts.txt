@@ -5,7 +5,7 @@ https://www.amazon.ca/ML7-12-BATTERY-Mighty-Battery-product/dp/B00K8V30D0/
 -Somewhat cheap battery with plenty of capacity (86Wh). Any lead-acid 12V battery over 4Ah will do.
 
 BMS/Solar Charge Controller:
-https://store-usa.arduino.cc/products/solar-power-manager-for-12v-lead-acid-battery
+https://www.amazon.ca/Controller-Intelligent-Regulator-Paremeter-Adjustable/dp/B08NFSCZ4V/
 Cheap all-in-one with a screen. Combines solar and battery management and provides 5v and presumably 12v on the 'light' output. 
 
 Solar Panel:
