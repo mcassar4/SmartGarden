@@ -29,15 +29,27 @@ extern "C" void app_main() {
     const char *ssid = "Test";
     const char *pass = "123456789";
     wifi_init(ssid, pass);
+    int32_t rssi;
+    char rssi_str[20];
     
-
     ssd1306_clear_screen(ssd1306_dev, 0x00);
     ssd1306_draw_string(ssd1306_dev, 0, 0, (const uint8_t*)"Initialization OK", 12, 1);
     ssd1306_refresh_gram(ssd1306_dev);
 
     while (true) {
         // Simple delay to keep the task alive
-        vTaskDelay(pdMS_TO_TICKS(10000));
-        heltec_loop();
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+        // Get the RSSI value
+        rssi = wifi_manager_get_rssi();
+
+        // Convert RSSI value to string
+        sprintf(rssi_str, "RSSI: %ld", rssi);
+
+        // Clear the screen and display the RSSI value
+        ssd1306_clear_screen(ssd1306_dev, 0x00);
+        ssd1306_draw_string(ssd1306_dev, 0, 0, (const uint8_t*)rssi_str, 12, 1);
+        ssd1306_refresh_gram(ssd1306_dev);
+        //heltec_loop();
     }
 }
