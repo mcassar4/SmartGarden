@@ -8,6 +8,7 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "esp_wifi.h"
+#include "esp_mac.h"
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_system.h"
@@ -75,19 +76,32 @@ esp_err_t wifi_manager_connect(void) {
     return ESP_OK;
 }
 
+int32_t wifi_manager_get_rssi(void) {
+    wifi_ap_record_t ap_info;
+    if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
+        return ap_info.rssi;
+    } else {
+        ESP_LOGE(TAG, "Failed to get AP info");
+        return 0;  // Return 0 if unable to get RSSI
+    }
+}
+
 void wifi_task(void *pvParameters) {
+    int32_t rssi;
     esp_netif_ip_info_t ip;
     memset(&ip, 0, sizeof(esp_netif_ip_info_t));
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
     while (1) {
         vTaskDelay(5000 / portTICK_PERIOD_MS);
+        rssi = wifi_manager_get_rssi();
 
-        if (esp_netif_get_ip_info(sta_netif, &ip) == 0) {
+        if (esp_netif_get_ip_info(sta_netif, &ip) == 0 && rssi != 0) {
             ESP_LOGI(TAG, "~~~~~~~~~~~");
             ESP_LOGI(TAG, "IP:" IPSTR, IP2STR(&ip.ip));
             ESP_LOGI(TAG, "MASK:" IPSTR, IP2STR(&ip.netmask));
             ESP_LOGI(TAG, "GW:" IPSTR, IP2STR(&ip.gw));
+            ESP_LOGI(TAG, "RSSI: %ld", rssi);
             ESP_LOGI(TAG, "~~~~~~~~~~~");
         }
     }
