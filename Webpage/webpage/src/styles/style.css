@@ -8,6 +8,10 @@
     text-align: center;
 }
 
+.empty-height {
+    height: 50px;
+}
+
 .App {
     text-align: center;
 }
@@ -55,9 +59,73 @@
 .App-main section {
     /* margin: 20px 0; */
     width: 100%;
-    max-width: 800px; 
+    max-width: 800px;
 }
+
 .image-gallery {
     width: 100%;
     max-width: 100%;
+}
+
+
+/* Weather */
+.weather-root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.weather-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    background: #f0f8ff;
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+.rain-data-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.rain-data-item {
+    background: #e0f7fa;
+    margin: 0 10px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 60px;
+}
+
+.water-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+}
+
+.water-button:hover {
+    background: #0056b3;
+}
+
+.water-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
 }

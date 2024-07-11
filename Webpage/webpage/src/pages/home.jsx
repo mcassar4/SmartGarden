@@ -1,15 +1,19 @@
 import NavBar from "../components/navBar";
 import Footer from "../components/footer";
+import Weather from "./weather";
 
 const Home = () => {
     return (
         <div className="App">
             <NavBar />
-            <main className="App-main">
-                <section>
-                    <p>Weather forecast</p>
-                </section>
-            </main>
+
+            <div className="weather-root">
+                <Weather />
+            </div>
+
+            <div className='empty-height'></div>
+            <div className='empty-height'></div>
+
             <Footer />
         </div>
     );
