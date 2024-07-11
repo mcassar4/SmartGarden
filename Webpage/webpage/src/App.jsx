@@ -5,6 +5,7 @@ import './App.css';
 
 import Gallery from './pages/gallery';
 import Home from './pages/home';
+import About from './pages/about';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Routes>
           <Route index path="/" element={<Home />} />
           <Route path="gallery" element={<Gallery />} />
-          {/* <Route path="*" element={<ErrorPage />} /> */}
+          <Route path="about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );
