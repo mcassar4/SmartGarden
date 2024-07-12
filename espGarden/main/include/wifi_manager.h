@@ -86,6 +86,14 @@ int32_t wifi_manager_get_rssi(void) {
     }
 }
 
+esp_err_t wifi_manager_get_ip(char* ip){
+    esp_netif_ip_info_t net_info;
+    memset(&net_info, 0, sizeof(esp_netif_ip_info_t));
+    if (esp_netif_get_ip_info(sta_netif, &net_info) == 0) 
+        sprintf(ip, "" IPSTR, IP2STR(&net_info.ip));
+    return ESP_OK;
+}
+
 void wifi_task(void *pvParameters) {
     int32_t rssi;
     esp_netif_ip_info_t ip;
