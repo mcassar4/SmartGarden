@@ -91,6 +91,7 @@ esp_err_t wifi_manager_get_ip(char* ip){
     memset(&net_info, 0, sizeof(esp_netif_ip_info_t));
     if (esp_netif_get_ip_info(sta_netif, &net_info) == 0) 
         sprintf(ip, "" IPSTR, IP2STR(&net_info.ip));
+    ESP_LOGE(TAG, "Getting IP");    
     return ESP_OK;
 }
 
