@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <inttypes.h>
 #include "esp_chip_info.h"
 #include "heltec_unofficial.h"
@@ -24,13 +25,14 @@ extern "C" void app_main() {
     // Setup Heltec device (OLED and LoRa)
     heltec_setup();
     // needed for wifi
-    ESP_ERROR_CHECK(nvs_flash_init());
 
     const char *ssid = "Test";
     const char *pass = "123456789";
     wifi_init(ssid, pass);
     int32_t rssi;
     char rssi_str[20];
+    bool get_ip = true;
+    char* ip = (char*)"0.0.0.0";
     
     ssd1306_clear_screen(ssd1306_dev, 0x00);
     ssd1306_draw_string(ssd1306_dev, 0, 0, (const uint8_t*)"Initialization OK", 12, 1);
@@ -50,6 +52,23 @@ extern "C" void app_main() {
         ssd1306_clear_screen(ssd1306_dev, 0x00);
         ssd1306_draw_string(ssd1306_dev, 0, 0, (const uint8_t*)rssi_str, 12, 1);
         ssd1306_refresh_gram(ssd1306_dev);
+
+        // Get IP only once when connection is established
+        if (rssi != 0 && get_ip) {
+            wifi_manager_get_ip(ip);
+            if (strcmp(ip, "0.0.0.0") != 0) {
+                get_ip = false;
+            }
+        }
+
+        // Reset IP if connection is lost
+        if (rssi == 0) {
+            strcpy(ip, "0.0.0.0");
+            get_ip = true;
+        }
+        ssd1306_draw_string(ssd1306_dev, 0, 16, (const uint8_t*)ip, 12, 1);
+        ssd1306_refresh_gram(ssd1306_dev);
+
         //heltec_loop();
     }
 }
