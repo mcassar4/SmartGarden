@@ -27,4 +27,11 @@ if not exist "!file!" (
 move /Y "!tempfile!" "!file!" > NUL
 
 echo Replacement complete.
+
+:: Git ignore
+echo Configuring .vscode to be skipped for future changes...
+git update-index --skip-worktree -r .vscode/
+echo Done. .vscode directory changes will now be ignored.
+
+
 endlocal
