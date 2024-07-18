@@ -2,7 +2,6 @@
 #define WIFI_MANAGER_H
 
 
-#include "wifi_manager.h"
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -64,13 +63,6 @@ esp_err_t wifi_manager_set_credentials(const char *ssid, const char *password) {
     return ESP_OK;
 }
 
-// esp_err_t wifi_manager_set_certificates(const uint8_t *ca_cert, size_t ca_cert_len, const uint8_t *pac_file, size_t pac_file_len) {
-//     ESP_ERROR_CHECK(esp_eap_client_set_ca_cert(ca_cert, ca_cert_len));
-//     ESP_ERROR_CHECK(esp_eap_client_set_pac_file(pac_file, pac_file_len - 1));
-
-//     return ESP_OK;
-// }
-
 esp_err_t wifi_manager_connect(void) {
     ESP_ERROR_CHECK(esp_wifi_start());
     return ESP_OK;
@@ -81,7 +73,7 @@ int32_t wifi_manager_get_rssi(void) {
     if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
         return ap_info.rssi;
     } else {
-        ESP_LOGE(TAG, "Failed to get AP info");
+        // ESP_LOGE(TAG, "Failed to get AP info");
         return 0;  // Return 0 if unable to get RSSI
     }
 }
@@ -120,9 +112,6 @@ void wifi_init(const char *ssid, const char *password){
     ESP_ERROR_CHECK(wifi_manager_init());
 
     ESP_ERROR_CHECK(wifi_manager_set_credentials(ssid, password));
-
-    // If you have certificates, set them here
-    // ESP_ERROR_CHECK(wifi_manager_set_certificates(ca_pem_start, ca_pem_bytes, pac_file_pac_start, pac_file_bytes));
 
     ESP_ERROR_CHECK(wifi_manager_connect());
 
