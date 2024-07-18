@@ -42,13 +42,7 @@ After installing the ESP-IDF extension, you need to configure the ESP-IDF enviro
 3. Navigate to the location where you cloned or downloaded the `smartGarden` project.
 4. Select the `espGarden` folder and open it.
 
-## Step 5: Run the Customization Script
-
-1. Open the integrated terminal in Visual Studio Code by selecting `Terminal > New Terminal` from the top menu.
-2. Navigate to the root directory of the `espGarden` project if not already there.
-3. Run the following command to execute the customization batch file: ./customizeUser.bat
-
-## Step 6: Build the Project
+## Step 5: Build the Project
 
 To build the `espGarden` project, follow these steps in Visual Studio Code:
 
@@ -69,7 +63,7 @@ To build the `espGarden` project, follow these steps in Visual Studio Code:
 
 By setting the appropriate target and COM port, and using the provided build option, the project should compile without issues, ready for flashing to the Heltec ESP32-S3.
 
-## Step 7: Flash the Project to the Device
+## Step 6: Flash the Project to the Device
 
 To upload the compiled firmware to your Heltec ESP32-S3, use the following steps in Visual Studio Code:
 
@@ -89,7 +83,7 @@ To upload the compiled firmware to your Heltec ESP32-S3, use the following steps
 
 This step uploads the compiled project to the Heltec ESP32-S3, making it ready for operation with the new `espGarden` firmware.
 
-## Step 8: Monitor the Output Using Tera Term
+## Step 7: Monitor the Output Using Tera Term
 
 After flashing the `espGarden` project to the ESP32-S3, you can monitor its output and interact with it using Tera Term, a terminal emulator. Follow these steps to set it up:
 

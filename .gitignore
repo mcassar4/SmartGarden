@@ -14,4 +14,5 @@
 # /path/to/file.txt
 
 # Ignore all files in a directory
-# directory_name/
+espGarden/.gitignore
+espGarden/build
