@@ -73,7 +73,7 @@ int32_t wifi_manager_get_rssi(void) {
     if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
         return ap_info.rssi;
     } else {
-        // ESP_LOGE(TAG, "Failed to get AP info");
+        ESP_LOGE(TAG, "Failed to get AP info");
         return 0;  // Return 0 if unable to get RSSI
     }
 }
@@ -88,21 +88,20 @@ esp_err_t wifi_manager_get_ip(char* ip){
 }
 
 void wifi_task(void *pvParameters) {
-    int32_t rssi;
+    wifi_ap_record_t ap_info;
     esp_netif_ip_info_t ip;
     memset(&ip, 0, sizeof(esp_netif_ip_info_t));
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
     while (1) {
         vTaskDelay(5000 / portTICK_PERIOD_MS);
-        rssi = wifi_manager_get_rssi();
 
-        if (esp_netif_get_ip_info(sta_netif, &ip) == 0 && rssi != 0) {
+        if (esp_netif_get_ip_info(sta_netif, &ip) == 0 && esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
             ESP_LOGI(TAG, "~~~~~~~~~~~");
             ESP_LOGI(TAG, "IP:" IPSTR, IP2STR(&ip.ip));
             ESP_LOGI(TAG, "MASK:" IPSTR, IP2STR(&ip.netmask));
             ESP_LOGI(TAG, "GW:" IPSTR, IP2STR(&ip.gw));
-            ESP_LOGI(TAG, "RSSI: %ld", rssi);
+            ESP_LOGI(TAG, "RSSI: %ld", (long int)ap_info.rssi);
             ESP_LOGI(TAG, "~~~~~~~~~~~");
         }
     }
