@@ -47,7 +47,7 @@ static const char* DISPLAY_LOG_TAG = "Display Manager";
 #include "HotButton.h"
 
 // Custom Libraries
-// #include "wifi_manager.h"
+#include "wifi_manager.h"
 
 //################################################################################//
 
@@ -258,7 +258,7 @@ void heltec_setup() {
     init_nvs();
     init_display();
 
-    // init_wifi(WIFI_SSID, WIFI_PASS);
+    wifi_init(WIFI_SSID, WIFI_PASS);
     // ADC configuration for battery monitoring disabled for now
     // adc1_config_width(ADC_WIDTH_BIT_12);
     // adc1_config_channel_atten(VBAT_ADC, ADC_ATTEN_DB_11); // Adjust as necessary
