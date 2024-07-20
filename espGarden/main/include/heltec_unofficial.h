@@ -48,6 +48,7 @@ static const char* DISPLAY_LOG_TAG = "Display Manager";
 
 // Custom Libraries
 #include "wifi_manager.h"
+#include "http_server.h"
 
 //################################################################################//
 
@@ -259,6 +260,14 @@ void heltec_setup() {
     init_display();
 
     wifi_init(WIFI_SSID, WIFI_PASS);
+
+    /* Start the webserver */
+    httpd_handle_t server = start_webserver();
+    if (server == NULL) {
+        ESP_LOGI(TAG, "Failed to start web server!");
+    } else {
+        ESP_LOGI(TAG, "Web server started!");
+    }
     // ADC configuration for battery monitoring disabled for now
     // adc1_config_width(ADC_WIDTH_BIT_12);
     // adc1_config_channel_atten(VBAT_ADC, ADC_ATTEN_DB_11); // Adjust as necessary
