@@ -8,7 +8,8 @@ static const char* SETUP_LOG_TAG = "Setup";
 static const char* LOOP_LOG_TAG = "Loop";
 static const char* GARDEN_LOG_TAG = "Garden App";
 static const char* DISPLAY_LOG_TAG = "Display Manager";
-// static const char* DISPLAY_LOG_TAG = "WIFI Manager";
+static const char* WIFI_LOG_TAG = "WIFI Manager";
+static const char* HTTP_LOG_TAG = "HTTP Manager";
 
 //################################################################################//
 
@@ -264,9 +265,9 @@ void heltec_setup() {
     /* Start the webserver */
     httpd_handle_t server = start_webserver();
     if (server == NULL) {
-        ESP_LOGI(TAG, "Failed to start web server!");
+        ESP_LOGI(HTTP_LOG_TAG, "Failed to start web server!");
     } else {
-        ESP_LOGI(TAG, "Web server started!");
+        ESP_LOGI(HTTP_LOG_TAG, "Web server started!");
     }
     // ADC configuration for battery monitoring disabled for now
     // adc1_config_width(ADC_WIDTH_BIT_12);

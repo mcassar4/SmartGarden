@@ -13,8 +13,8 @@
 #include "esp_system.h"
 #include "esp_err.h"
 #include "esp_netif.h"
+#include "heltec_unofficial.h"
 
-static const char *TAG = "wifi_manager";
 static EventGroupHandle_t wifi_event_group;
 static esp_netif_t *sta_netif = NULL;
 const int CONNECTED_BIT = BIT0;
@@ -56,7 +56,7 @@ esp_err_t wifi_manager_set_credentials(const char *ssid, const char *password) {
     strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
     strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
 
-    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
+    ESP_LOGI(WIFI_LOG_TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
 
@@ -73,7 +73,7 @@ int32_t wifi_manager_get_rssi(void) {
     if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
         return ap_info.rssi;
     } else {
-        ESP_LOGE(TAG, "Failed to get AP info");
+        ESP_LOGE(WIFI_LOG_TAG, "Failed to get AP info");
         return 0;  // Return 0 if unable to get RSSI
     }
 }
@@ -83,7 +83,7 @@ esp_err_t wifi_manager_get_ip(char* ip){
     memset(&net_info, 0, sizeof(esp_netif_ip_info_t));
     if (esp_netif_get_ip_info(sta_netif, &net_info) == 0) 
         sprintf(ip, "" IPSTR, IP2STR(&net_info.ip));
-    ESP_LOGE(TAG, "Getting IP");    
+    ESP_LOGE(WIFI_LOG_TAG, "Getting IP");    
     return ESP_OK;
 }
 
@@ -97,12 +97,12 @@ void wifi_task(void *pvParameters) {
         vTaskDelay(5000 / portTICK_PERIOD_MS);
 
         if (esp_netif_get_ip_info(sta_netif, &ip) == 0 && esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
-            ESP_LOGI(TAG, "~~~~~~~~~~~");
-            ESP_LOGI(TAG, "IP:" IPSTR, IP2STR(&ip.ip));
-            ESP_LOGI(TAG, "MASK:" IPSTR, IP2STR(&ip.netmask));
-            ESP_LOGI(TAG, "GW:" IPSTR, IP2STR(&ip.gw));
-            ESP_LOGI(TAG, "RSSI: %ld", (long int)ap_info.rssi);
-            ESP_LOGI(TAG, "~~~~~~~~~~~");
+            ESP_LOGI(WIFI_LOG_TAG, "~~~~~~~~~~~");
+            ESP_LOGI(WIFI_LOG_TAG, "IP:" IPSTR, IP2STR(&ip.ip));
+            ESP_LOGI(WIFI_LOG_TAG, "MASK:" IPSTR, IP2STR(&ip.netmask));
+            ESP_LOGI(WIFI_LOG_TAG, "GW:" IPSTR, IP2STR(&ip.gw));
+            ESP_LOGI(WIFI_LOG_TAG, "RSSI: %ld", (long int)ap_info.rssi);
+            ESP_LOGI(WIFI_LOG_TAG, "~~~~~~~~~~~");
         }
     }
 }
