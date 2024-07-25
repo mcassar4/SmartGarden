@@ -32,12 +32,44 @@ const Weather = () => {
         fetchWeatherData();
     }, []);
 
-    const handleWaterPlants = () => {
+    const handleWaterPlants = async () => {
         setIsWatering(true);
-        setTimeout(() => {
-            setIsWatering(false);
-        }, 2000);
+
+        var axios = require('axios');
+        var data = '1ZONE|2HOUR';
+
+        var config = {
+            method: 'post',
+            url: '172.20.10.8/esp_rx',
+            headers: {},
+            data: data
+        };
+
+        axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        // try {
+        //     await axios.post('http://172.20.10.8/uri/post', {
+        //         'data': 'hey'
+        //     }, {
+        //         headers: {
+        //             'Content-Type': 'application/x-www-form-urlencoded',
+        //         }
+        //     }).then((response) => {
+        //         console.log(response.data);
+        //         setIsWatering(false);
+        //     });
+        // } catch (error) {
+        //     console.error('Error watering plants:', error);
+        //     setIsWatering(false);
+        // }
     };
+
 
     if (loading) {
         return <div>Loading...</div>;
