@@ -2,8 +2,8 @@
 #define HELTEC_UNOFFICIAL_H
 
 //################################################################################//
+// Define Logging Tags
 
-// Define logging tags
 static const char* SETUP_LOG_TAG = "Setup";
 static const char* LOOP_LOG_TAG = "Loop";
 static const char* GARDEN_LOG_TAG = "Garden App";
@@ -12,6 +12,16 @@ static const char* WIFI_LOG_TAG = "WIFI Manager";
 static const char* HTTP_LOG_TAG = "HTTP Manager";
 
 //################################################################################//
+// Includes
+
+// STD
+#include <string.h>
+#include <algorithm>
+#include <inttypes.h>
+#include <stdio.h>
+#include <vector>
+#include <stdlib.h>
+#include <queue>
 
 // Drivers
 #include "driver/gpio.h"
@@ -28,10 +38,15 @@ static const char* HTTP_LOG_TAG = "HTTP Manager";
 #include "esp_event.h"
 #include "esp_system.h"
 #include "esp_mac.h"
+#include "esp_err.h"
+#include "esp_netif.h"
+#include "esp_http_server.h"
 
 // RTOS
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/event_groups.h"
+#include "freertos/semphr.h"
 #include "sdkconfig.h"
 
 //NVS
@@ -40,7 +55,6 @@ static const char* HTTP_LOG_TAG = "HTTP Manager";
 //ADC
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_continuous.h"
-
 
 // Heltec Dependencies
 #include "ssd1306.h"
@@ -63,8 +77,8 @@ static const char* HTTP_LOG_TAG = "HTTP Manager";
 #define USB_PID 0x1001
 
 // WIFI
-#define WIFI_SSID "Test"
-#define WIFI_PASS "123456789"
+#define WIFI_SSID "manny"
+#define WIFI_PASS "manny123"
 
 // Little Orange LED
 #define LED_BUILTIN = SOC_GPIO_PIN_COUNT + 48;
@@ -152,10 +166,12 @@ HotButton button(PRG_BUTTON);
 #define RX = GPIO_NUM_44;
 
 //################################################################################//
+// External objects used in this driver
 
 extern ssd1306_handle_t display;
 
 //################################################################################//
+// Function declarations
 
 void heltec_setup();
 void heltec_loop();
@@ -166,9 +182,13 @@ bool heltec_wakeup_was_timer();
 
 void init_nvs();
 void init_display();
+void init_wifi();
+void init_webserver();
+
 void display_centered_string(ssd1306_handle_t *display, const char *str, uint8_t font_size, uint32_t duration_ms);
 
 //################################################################################//
+// Init functions
 
 void init_nvs(){
     // Initialize NVS
@@ -212,6 +232,25 @@ void init_display() {
         ssd1306_refresh_gram(display);
     } else {
         ESP_LOGE(DISPLAY_LOG_TAG, "Failed to initialize display");
+    }
+}
+
+void init_wifi(){
+    ESP_ERROR_CHECK(wifi_manager_init());
+    ESP_ERROR_CHECK(wifi_set_config(WIFI_SSID, WIFI_PASS));
+    ESP_ERROR_CHECK(wifi_start());
+
+    // Print out connection status on display after connected and
+    // create a task to report the connection status in console
+    xTaskCreate(&wifi_print_stats, "wifi_stats", 4096, NULL, 5, NULL);
+}
+
+void init_webserver(){
+    httpd_handle_t server = start_webserver();
+    if (server == NULL) {
+        ESP_LOGI(HTTP_LOG_TAG, "Failed to start web server!");
+    } else {
+        ESP_LOGI(HTTP_LOG_TAG, "Web server started!");
     }
 }
 
@@ -259,16 +298,9 @@ void heltec_setup() {
 
     init_nvs();
     init_display();
+    init_wifi();
+    init_webserver();
 
-    wifi_init(WIFI_SSID, WIFI_PASS);
-
-    /* Start the webserver */
-    httpd_handle_t server = start_webserver();
-    if (server == NULL) {
-        ESP_LOGI(HTTP_LOG_TAG, "Failed to start web server!");
-    } else {
-        ESP_LOGI(HTTP_LOG_TAG, "Web server started!");
-    }
     // ADC configuration for battery monitoring disabled for now
     // adc1_config_width(ADC_WIDTH_BIT_12);
     // adc1_config_channel_atten(VBAT_ADC, ADC_ATTEN_DB_11); // Adjust as necessary
