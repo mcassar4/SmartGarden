@@ -260,7 +260,7 @@ void init_webserver(){
 //################################################################################//
 
 // Helper Functions
-void display_centered_string(ssd1306_handle_t &display, const char *str, uint8_t font_size, uint32_t duration_ms) {
+void display_centered_string(const char *str, uint8_t font_size, uint32_t duration_ms) {
     // Function to display a centered string for a specific duration
     if (display == nullptr) {
         ESP_LOGE(SETUP_LOG_TAG, "Display handle is NULL");
@@ -308,7 +308,7 @@ void heltec_setup() {
     // adc1_config_width(ADC_WIDTH_BIT_12);
     // adc1_config_channel_atten(VBAT_ADC, ADC_ATTEN_DB_11); // Adjust as necessary
 
-    display_centered_string(display, "ESP32 Setup Complete!", 12, 1000);
+    display_centered_string("ESP32 Setup Complete!", 12, 1000);
     ESP_LOGI(SETUP_LOG_TAG, "Setup complete");
 }
 
