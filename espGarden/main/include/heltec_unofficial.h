@@ -292,6 +292,53 @@ void display_centered_string(const char *str, uint8_t font_size, uint32_t durati
 
 }
 
+void display_stats() {
+    char ip[16] = {0};
+    wifi_manager_get_ip(ip);
+
+    int32_t rssi = wifi_manager_get_rssi();
+    float temperature = heltec_temperature();
+    const int text_size = 12;
+    // Create strings with variables
+    std::string watering_status = "Water: Test";
+    std::string connection_status = "Connected: " + std::to_string(wifi_manager_is_connected());
+    std::string ip_status = std::string("IP: ") + ip;
+    std::string rssi_status = "RSSI: " + std::to_string(rssi);
+    std::string temperature_status = "Temp: " + std::to_string(temperature);
+
+    ssd1306_clear_screen(display, 0x00);
+    ssd1306_draw_string(display, 0, 0, (const uint8_t *)watering_status.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 16, (const uint8_t *)connection_status.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 32, (const uint8_t *)ip_status.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 48, (const uint8_t *)rssi_status.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 64, (const uint8_t *)temperature_status.c_str(), text_size, 1);
+    ssd1306_refresh_gram(display);
+}
+
+void log_stats() {
+    char ip[16] = {0};
+    wifi_manager_get_ip(ip);
+
+    int32_t rssi = wifi_manager_get_rssi();
+    float temperature = heltec_temperature();
+
+    // Create strings with variables
+    std::string watering_status = "Watering Status: Test";
+    std::string connection_status = "Connected: " + std::to_string(wifi_manager_is_connected());
+    std::string ip_status = std::string("IP: ") + ip;
+    std::string rssi_status = "RSSI: " + std::to_string(rssi);
+    std::string temperature_status = "Temperature: " + std::to_string(temperature);
+
+    // Log stats to the console
+    ESP_LOGI(GARDEN_LOG_TAG, "-------------------------");
+    ESP_LOGI(GARDEN_LOG_TAG, "%s", watering_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "%s", connection_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "%s", ip_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "%s", rssi_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "%s", temperature_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "-------------------------");
+}
+
 //################################################################################//
 
 // Driver Functions
