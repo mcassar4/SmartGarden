@@ -360,20 +360,13 @@ void heltec_setup() {
     ESP_LOGI(SETUP_LOG_TAG, "Setup complete");
 }
 
-void heltec_loop(const int &delay) {
-    // ESP_LOGI(SETUP_LOG_TAG, "Loop running");
-
-    // Handle button press
+void heltec_loop() {
+    // Handle button press disabled for now
     int btn_level = gpio_get_level(PRG_BUTTON);
     if (btn_level == 0) {  // Assuming active-low button
         ESP_LOGI(LOOP_LOG_TAG, "Button pressed");
-        char temp_buffer[10];
-        sprintf(temp_buffer, "%f", heltec_temperature());
-        display_centered_string(display, temp_buffer, 12, 1000);
+        display_centered_string("Button pressed", 12, 1000);
     }
-
-    // Delay in loop for readability in logs
-    vTaskDelay(pdMS_TO_TICKS(delay));
 }
 
 void heltec_led(int percent) {
