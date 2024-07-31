@@ -15,13 +15,13 @@ const char* HTTP_LOG_TAG = "HTTP Manager";
 // Includes
 
 // STD
-#include <string.h>
 #include <algorithm>
 #include <inttypes.h>
 #include <stdio.h>
 #include <vector>
 #include <stdlib.h>
 #include <queue>
+#include <string>
 
 // Drivers
 #include "driver/gpio.h"
