@@ -272,9 +272,10 @@ void display_centered_string(const char *str, uint8_t font_size, uint32_t durati
     ssd1306_refresh_gram(display);
 
     // Calculate string width and starting position to center the string
-    uint8_t str_width = font_size * strlen(str);
-    uint8_t start_x = (DISPLAY_WIDTH - str_width) / 2;
-    uint8_t start_y = (DISPLAY_HEIGHT - font_size) / 2;
+    // uint8_t str_width = font_size * strlen(str);
+    // uint8_t start_x = (DISPLAY_WIDTH - str_width) / 2;
+    uint8_t start_x = 0;
+    uint8_t start_y = ((DISPLAY_HEIGHT - font_size) / 2) - font_size / 2;
 
     // Draw the string at the calculated position
     ssd1306_draw_string(display, start_x, start_y, (const uint8_t *)str, font_size, 1);
