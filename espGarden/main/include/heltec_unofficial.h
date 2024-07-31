@@ -185,7 +185,9 @@ void init_display();
 void init_wifi();
 void init_webserver();
 
-void display_centered_string(ssd1306_handle_t *display, const char *str, uint8_t font_size, uint32_t duration_ms);
+void display_centered_string(const char *str, uint8_t font_size, uint32_t duration_ms);
+void display_stats();
+void log_stats();
 
 //################################################################################//
 // Init functions
