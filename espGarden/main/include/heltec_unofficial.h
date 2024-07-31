@@ -237,15 +237,16 @@ void init_display() {
     }
 }
 
-void init_wifi(){
+void init_wifi() {
     ESP_ERROR_CHECK(wifi_manager_init());
     ESP_ERROR_CHECK(wifi_set_config(WIFI_SSID, WIFI_PASS));
     ESP_ERROR_CHECK(wifi_start());
 
-    // Print out connection status on display after connected and
-    // create a task to report the connection status in console
-    xTaskCreate(&wifi_print_stats, "wifi_stats", 4096, NULL, 5, NULL);
-}
+    while (!wifi_manager_is_connected()) {
+        ESP_LOGI(GARDEN_LOG_TAG, "Waiting for WiFi connection setup...");
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+} 
 
 void init_webserver(){
     httpd_handle_t server = start_webserver();
