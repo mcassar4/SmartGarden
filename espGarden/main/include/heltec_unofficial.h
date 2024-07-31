@@ -4,12 +4,12 @@
 //################################################################################//
 // Define Logging Tags
 
-static const char* SETUP_LOG_TAG = "Setup";
-static const char* LOOP_LOG_TAG = "Loop";
-static const char* GARDEN_LOG_TAG = "Garden App";
-static const char* DISPLAY_LOG_TAG = "Display Manager";
-static const char* WIFI_LOG_TAG = "WIFI Manager";
-static const char* HTTP_LOG_TAG = "HTTP Manager";
+const char* SETUP_LOG_TAG = "Setup";
+const char* LOOP_LOG_TAG = "Loop";
+const char* GARDEN_LOG_TAG = "Garden App";
+const char* DISPLAY_LOG_TAG = "Display Manager";
+const char* WIFI_LOG_TAG = "WIFI Manager";
+const char* HTTP_LOG_TAG = "HTTP Manager";
 
 //################################################################################//
 // Includes
