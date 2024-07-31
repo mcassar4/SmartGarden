@@ -17,6 +17,17 @@ void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, voi
     }
 }
 
+bool wifi_manager_is_connected() {
+    return (xEventGroupGetBits(wifi_event_group) & CONNECTED_BIT) != 0;
+}
+
+bool wifi_manager_reconnect() {
+    if (esp_wifi_connect() == ESP_OK){
+        return true;
+    }
+    return false;
+}
+
 int32_t wifi_manager_get_rssi(void) {
     wifi_ap_record_t ap_info;
     if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
@@ -31,8 +42,7 @@ esp_err_t wifi_manager_get_ip(char* ip){
     esp_netif_ip_info_t net_info;
     memset(&net_info, 0, sizeof(esp_netif_ip_info_t));
     if (esp_netif_get_ip_info(sta_netif, &net_info) == 0) 
-        sprintf(ip, "" IPSTR, IP2STR(&net_info.ip));
-    ESP_LOGE(WIFI_LOG_TAG, "Getting IP");    
+        sprintf(ip, "" IPSTR, IP2STR(&net_info.ip));  
     return ESP_OK;
 }
 
