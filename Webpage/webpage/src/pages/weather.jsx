@@ -7,11 +7,16 @@ const Weather = () => {
     const [isWatering, setIsWatering] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentWeather, setCurrentWeather] = useState(null);
+
+    const latitude = 43.39141047955725;
+    const longitude = -79.76961512140457;
 
     useEffect(() => {
         const fetchWeatherData = async () => {
             try {
-                const response = await axios.get('https://api.open-meteo.com/v1/forecast?latitude=43.39141047955725&longitude=-79.76961512140457&hourly=precipitation_probability&timezone=auto&past_days=1&forecast_days=1');
+                setLoading(true);
+                const response = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=precipitation_probability,temperature_2m&current_weather=true&timezone=auto&past_days=1&forecast_days=1`);
                 const data = response.data;
                 const times = data.hourly.time;
                 const precipitation = data.hourly.precipitation_probability;
@@ -22,6 +27,7 @@ const Weather = () => {
                 })).filter(item => item.time.startsWith(today));
 
                 setRainData(rainData);
+                setCurrentWeather(data.current_weather);
                 setLoading(false);
             } catch (error) {
                 setError(error);
@@ -35,53 +41,45 @@ const Weather = () => {
     const handleWaterPlants = async () => {
         setIsWatering(true);
 
-        var axios = require('axios');
-        var data = '1ZONE|2HOUR';
-
-        var config = {
-            method: 'post',
-            url: '172.20.10.8/esp_rx',
-            headers: {},
-            data: data
+        const data = {
+            zone: '1ZONE',
+            duration: '2HOUR'
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
+        try {
+            const response = await axios.post('http://172.20.10.8/esp_rx', data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             });
-
-        // try {
-        //     await axios.post('http://172.20.10.8/uri/post', {
-        //         'data': 'hey'
-        //     }, {
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //         }
-        //     }).then((response) => {
-        //         console.log(response.data);
-        //         setIsWatering(false);
-        //     });
-        // } catch (error) {
-        //     console.error('Error watering plants:', error);
-        //     setIsWatering(false);
-        // }
+            console.log(JSON.stringify(response.data));
+            setIsWatering(false);
+        } catch (error) {
+            console.error('Error watering plants:', error);
+            setIsWatering(false);
+        } finally {
+            setIsWatering(false);
+        }
     };
 
-
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading-spinner">Loading...</div>;
     }
 
     if (error) {
-        return <div>Error fetching data: {error.message}</div>;
+        return <div className="error-message">Error fetching data: {error.message}</div>;
     }
 
     return (
         <div className="weather-container">
-            <h1>Today's Rain Forecast</h1>
+            <h2>Today's Rain Forecast</h2>
+            {/* {currentWeather && (
+                <div className="current-weather-container">
+                    <h3>Current Weather</h3>
+                    <div>Temperature: {currentWeather.temperature}°C</div>
+                    <div>Condition: {currentWeather.weathercode}</div>
+                </div> */}
+            {/* )} */}
             <div className="rain-data-container">
                 {rainData.length > 0 ? (
                     rainData.map((item, index) => (

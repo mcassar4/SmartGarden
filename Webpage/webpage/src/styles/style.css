@@ -81,13 +81,43 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    width: 100%;
+    padding-bottom: 20px;
     background: #f0f8ff;
     border-radius: 10px;
     width: 80%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.weather-container-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.current-weather-container {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    background-color: blue;
+    padding: 20px;
+    color: white; /* Optional: Text color for better visibility */
+    margin-top: 10px; /* Optional: Space between elements */
+}
+
+
+/* .weather-container-1 {
+    display: inline;
+    width: 100%;
+    align-items: right;
+}
+
+.current-weather-container {
+    padding-top: 0%;
+    margin-top: 0%;
+    background-color: red;
+} */
 
 h1 {
     color: #333;
@@ -128,4 +158,10 @@ h1 {
 .water-button:disabled {
     background: #cccccc;
     cursor: not-allowed;
+}
+
+.gallery-container {
+    /* width: 500px; */
+    /* height: 200px; */
+    /* background-color: red; */
 }
