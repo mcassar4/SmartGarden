@@ -166,9 +166,9 @@ HotButton button(PRG_BUTTON);
 #define RX = GPIO_NUM_44;
 
 //################################################################################//
-// External objects used in this driver
+// Objects used in this driver
 
-extern ssd1306_handle_t display;
+ssd1306_handle_t display;
 
 //################################################################################//
 // Function declarations

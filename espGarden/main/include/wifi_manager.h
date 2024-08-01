@@ -21,13 +21,6 @@ bool wifi_manager_is_connected() {
     return (xEventGroupGetBits(wifi_event_group) & CONNECTED_BIT) != 0;
 }
 
-bool wifi_manager_reconnect() {
-    if (esp_wifi_connect() == ESP_OK){
-        return true;
-    }
-    return false;
-}
-
 int32_t wifi_manager_get_rssi(void) {
     wifi_ap_record_t ap_info;
     if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
