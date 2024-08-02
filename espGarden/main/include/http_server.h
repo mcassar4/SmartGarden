@@ -28,6 +28,7 @@ esp_err_t rx_handler(httpd_req_t *req) {
 
     // Send a receive packet
     const char resp[] = "rec";
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     ESP_LOGI(HTTP_LOG_TAG, "Sent Receipt Confimation: %s", resp);
 
@@ -43,6 +44,7 @@ esp_err_t tx_handler(httpd_req_t *req) {
     snprintf(tx_buff, sizeof(tx_buff), "%s", test_data);
 
     // Send the data
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     httpd_resp_set_type(req, "application/json");
     httpd_resp_send(req, tx_buff, HTTPD_RESP_USE_STRLEN);
     ESP_LOGI(HTTP_LOG_TAG, "Sent: %s", tx_buff);
