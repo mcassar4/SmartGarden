@@ -56,7 +56,6 @@ extern "C" void app_main() {
         else if (do_reconnect_attempt)
         {
            ESP_LOGI(LOOP_LOG_TAG, "WiFi disconnected, attempting to reconnect...");
-           esp_wifi_connect();
         }
 
         // Reset loop_lifetime every day to avoid overflow in long term
