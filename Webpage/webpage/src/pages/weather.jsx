@@ -3,14 +3,24 @@ import axios from 'axios';
 import '../styles/style.css';
 
 const generateHours = () => {
-    const hours = ['Now'];
+    const hours = [];
+    const currentHour = new Date().getHours();
+    const currentPeriod = currentHour < 12 ? 'AM' : 'PM';
+
     for (let i = 0; i < 24; i++) {
         const hour = i % 12 === 0 ? 12 : i % 12;
         const period = i < 12 ? 'AM' : 'PM';
-        hours.push(`${hour}:00 ${period}`);
+        const isDisabled = i < currentHour || (i === currentHour && period === currentPeriod);
+        const hourLabel = `${hour}:00 ${period}`;
+
+        if (i === currentHour + 1) {
+            hours.push({ label: 'Now', disabled: false });
+        }
+        hours.push({ label: hourLabel, disabled: isDisabled });
     }
     return hours;
 };
+
 
 const getCurrentHourPlusOne = () => {
     const date = new Date();
@@ -35,6 +45,7 @@ const Weather = () => {
     const longitude = -79.76961512140457;
 
     useEffect(() => {
+
         const fetchWeatherData = async () => {
             try {
                 setLoading(true);
@@ -63,47 +74,127 @@ const Weather = () => {
         };
 
         fetchWeatherData();
+
+        checkPrecipitationAtMidnight();
+
     }, []);
+
+    const checkPrecipitationAtMidnight = () => {
+        const now = new Date();
+        const midnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1,
+            0, 0, 0, 0
+        );
+
+        const timeUntilMidnight = midnight.getTime() - now.getTime();
+
+        setTimeout(async () => {
+            await performMidnightCheck();
+            setInterval(performMidnightCheck, 24 * 60 * 60 * 1000);
+        }, timeUntilMidnight);
+    };
+
+    const performMidnightCheck = async () => {
+        try {
+            const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
+                params: {
+                    latitude: 43.39141047955725,
+                    longitude: -79.76961512140457,
+                    hourly: 'precipitation_probability',
+                    forecast_days: 1,
+                    timezone: 'auto'
+                }
+            });
+
+            const data = response.data;
+            const times = data.hourly.time;
+            const precipitation = data.hourly.precipitation_probability;
+
+            const eightAMIndex = times.findIndex(time => new Date(time).getHours() === 8);
+
+            if (eightAMIndex !== -1) {
+                const precipitationAtEightAM = precipitation[eightAMIndex];
+
+                if (precipitationAtEightAM < 50) {
+                    console.log('Precipitation is below 50%. Watering plants now.');
+                    setSelectedHour('Now');
+                    setSelectedZone('All');
+                    await executeWatering();
+                } else {
+                    console.log('Precipitation is above 50%. No watering needed.');
+                }
+            } else {
+                console.error('Could not find 8:00 AM in the forecast data.');
+            }
+        } catch (error) {
+            console.error('Error fetching precipitation data:', error);
+        }
+    };
+
+    const executeWatering = async () => {
+        const sendWaterRequest = async (zone) => {
+            const min = zone === 2 ? 80 : 70;
+            const data = `${zone}:${min}`;
+            console.log("Data sending: " + data);
+            try {
+                await axios.post('http://172.20.10.11/esp_rx', data).then((response) => {
+                    if (!response.data || response.data !== 'rec') {
+                        console.log('No response from ESP');
+                    }
+                    console.log('Data sent successfully:', response.data);
+                });
+            } catch (error) {
+                console.error('Error watering plants:', error);
+            }
+        };
+
+        if (selectedZone === 'All') {
+            for (let i = 1; i <= 5; i++) {
+                await sendWaterRequest(i);
+            }
+        } else {
+            await sendWaterRequest(selectedZone);
+        }
+    };
 
     const handleWaterPlants = async () => {
         setIsWatering(true);
+        if (selectedHour === 'Now') {
+            console.log('Watering now');
+            setIsWatering(false);
+            await executeWatering();
+        } else {
+            setIsWatering(false);
+            console.log('Watering will start at', selectedHour);
+            const selectedHourDate = new Date();
+            const [hour, period] = selectedHour.split(' ');
+            selectedHourDate.setHours(
+                period === 'AM' ? parseInt(hour, 10) % 12 : parseInt(hour, 10) % 12 + 12,
+                0,
+                0,
+                0
+            );
 
-        try {
-            for (let i = 1; i < 6; i++) {
-                var min = 70;
-
-                if (i === 2) {
-                    min = 80;
-                } else {
-                    min = 70;
-                }
-
-                var data = i + ':' + min;
-
-                await axios.post('http://172.20.10.11/esp_rx', data).then((response) => {
-                    console.log(response.data);
-                    if (response.data !== 'rec') {
-                        i--;
-                        console.log('Not going to ESP');
-                    }
-                    setIsWatering(false);
-                });
+            const delay = selectedHourDate.getTime() - new Date().getTime();
+            if (delay > 0) {
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
-        } catch (error) {
-            console.error('Error watering plants:', error);
-            setIsWatering(false);
-        }
-
-        try {
-            axios.get('http://172.20.10.11/esp_tx').then((response) => {
-                console.log(JSON.stringify(response.data['key1']));
-                setIsWatering(false);
-            });
-        } catch (error) {
-            console.error('Error watering plants:', error);
-            setIsWatering(false);
+            await executeWatering();
         }
     };
+
+    // This is for get request
+    // try {
+    //     axios.get('http://172.20.10.11/esp_tx').then((response) => {
+    //         console.log(JSON.stringify(response.data['key1']));
+    //         setIsWatering(false);
+    //     });
+    // } catch (error) {
+    //     console.error('Error watering plants:', error);
+    //     setIsWatering(false);
+    // }
 
     const zones = ['1', '2', '3', '4', '5', 'All'];
     const hours = generateHours();
@@ -166,9 +257,9 @@ const Weather = () => {
                         <label htmlFor="hour-select">Select Hour:</label>
                         <select id="hour-select" defaultValue={selectedHour} onChange={handleHourSelect}>
                             <option value="" disabled>Select an hour</option>
-                            {hours.map((hour, index) => (
-                                <option key={index} value={hour}>
-                                    {hour}
+                            {hours.map((hourObj, index) => (
+                                <option key={index} value={hourObj.label} disabled={hourObj.disabled}>
+                                    {hourObj.label}
                                 </option>
                             ))}
                         </select>
