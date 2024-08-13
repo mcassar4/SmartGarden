@@ -413,10 +413,12 @@ void heltec_setup() {
     esp_log_level_set(SETUP_LOG_TAG, ESP_LOG_INFO);
     ESP_LOGI(SETUP_LOG_TAG, "Starting setup");
 
+    init_mutex();
     init_nvs();
     init_display();
     init_wifi();
     init_webserver();
+    init_gpio();
 
     // ADC configuration for battery monitoring disabled for now
     // adc1_config_width(ADC_WIDTH_BIT_12);
