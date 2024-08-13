@@ -22,6 +22,7 @@ const char* HTTP_LOG_TAG = "HTTP Manager";
 #include <stdlib.h>
 #include <queue>
 #include <string>
+#include <sstream>
 
 // Drivers
 #include "driver/gpio.h"
@@ -61,9 +62,6 @@ const char* HTTP_LOG_TAG = "HTTP Manager";
 #include "RadioLib.h"
 #include "HotButton.h"
 
-// Custom Libraries
-#include "wifi_manager.h"
-#include "http_server.h"
 
 //################################################################################//
 
@@ -169,6 +167,13 @@ HotButton button(PRG_BUTTON);
 // Objects used in this driver
 
 ssd1306_handle_t display;
+
+//################################################################################//
+
+// Custom Libraries
+#include "system_state.h"
+#include "wifi_manager.h"
+#include "http_server.h"
 
 //################################################################################//
 // Function declarations
