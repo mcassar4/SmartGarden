@@ -393,20 +393,16 @@ void log_stats() {
     int32_t rssi = wifi_manager_get_rssi();
     float temperature = heltec_temperature();
 
-    // Create strings with variables
-    std::string watering_status = "Watering Status: Test";
-    std::string connection_status = "Connected: " + std::to_string(wifi_manager_is_connected());
-    std::string ip_status = std::string("IP: ") + ip;
-    std::string rssi_status = "RSSI: " + std::to_string(rssi);
-    std::string temperature_status = "Temperature: " + std::to_string(temperature);
+    // Watering status
+    std::string watering_status = system_state.is_watering ? "Watering" : "Waiting";
 
     // Log stats to the console
     ESP_LOGI(GARDEN_LOG_TAG, "-------------------------");
-    ESP_LOGI(GARDEN_LOG_TAG, "%s", watering_status.c_str());
-    ESP_LOGI(GARDEN_LOG_TAG, "%s", connection_status.c_str());
-    ESP_LOGI(GARDEN_LOG_TAG, "%s", ip_status.c_str());
-    ESP_LOGI(GARDEN_LOG_TAG, "%s", rssi_status.c_str());
-    ESP_LOGI(GARDEN_LOG_TAG, "%s", temperature_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "Watering Status: %s", watering_status.c_str());
+    ESP_LOGI(GARDEN_LOG_TAG, "IP: %s", ip);
+    ESP_LOGI(GARDEN_LOG_TAG, "RSSI: %ld", (long int)rssi);
+    ESP_LOGI(GARDEN_LOG_TAG, "Temperature: %.2f", temperature);
+    ESP_LOGI(GARDEN_LOG_TAG, "State JSON: %s", stateToJson().c_str());
     ESP_LOGI(GARDEN_LOG_TAG, "-------------------------");
 }
 
