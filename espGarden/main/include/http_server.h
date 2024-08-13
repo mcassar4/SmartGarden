@@ -4,7 +4,9 @@
 #ifndef MIN
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #endif
-const int RX_TX_BUFF_LEN = 64; // Message standard will be 64 bytes
+const int RX_TX_BUFF_LEN = 8; // Message standard will be 8 bytes
+
+
 
 /* Handler function for receiving commands */
 esp_err_t rx_handler(httpd_req_t *req) {
@@ -22,32 +24,33 @@ esp_err_t rx_handler(httpd_req_t *req) {
 
     rx_buf[rx] = 0;
     ESP_LOGI(HTTP_LOG_TAG, "Received: %s", rx_buf);
+    std::string resp = "rec";
     
-    // Process the command here (e.g., water the garden for an hour)
-    // process_watering_command(system_state, rx_buf);
+    // Process the command here (e.g., water the garden for an hour = A:60)
+    xSemaphoreTake(system_state.state_mutex, portMAX_DELAY);
+    if (!add_watering_command_to_queue(std::string(rx_buf))) {
+        resp = "err";
+    };
+    xSemaphoreGive(system_state.state_mutex);
 
     // Send a receive packet
-    const char resp[] = "rec";
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-    httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
-    ESP_LOGI(HTTP_LOG_TAG, "Sent Receipt Confimation: %s", resp);
+    httpd_resp_send(req, resp.c_str(), HTTPD_RESP_USE_STRLEN);
+    ESP_LOGI(HTTP_LOG_TAG, "Sent Receipt Confimation: %s", resp.c_str());
 
     return ESP_OK;
 }
 
 /* Handler function for sending state data */
 esp_err_t tx_handler(httpd_req_t *req) {
-    char tx_buff[RX_TX_BUFF_LEN]; // Buffer for sending data
-
-    // Test DATA we are sending for now
-    const char * test_data = "DATA";
-    snprintf(tx_buff, sizeof(tx_buff), "%s", test_data);
+    // Get the system state json
+    std::string json_state = stateToJson();
 
     // Send the data
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     httpd_resp_set_type(req, "application/json");
-    httpd_resp_send(req, tx_buff, HTTPD_RESP_USE_STRLEN);
-    ESP_LOGI(HTTP_LOG_TAG, "Sent: %s", tx_buff);
+    httpd_resp_send(req, json_state.c_str(), HTTPD_RESP_USE_STRLEN);
+    ESP_LOGI(HTTP_LOG_TAG, "Sent: %s", json_state.c_str());
     return ESP_OK;
 }
 
