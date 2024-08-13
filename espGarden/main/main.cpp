@@ -67,8 +67,45 @@ extern "C" void app_main() {
         if (do_update_display) { display_stats(); }
         if (do_log_stats) { log_stats(); }
         if (do_check_state) {
+            // Lock the system state for checking
+            xSemaphoreTake(system_state.state_mutex, portMAX_DELAY);
+
+            // Watering commands will only be processed if
+            // the system isnt currently watering and there is a command in the queue
+            if (!system_state.is_watering &&
+                !system_state.command_queue.empty())
+            {
+                // Process the first command in the queue
+                std::string command = system_state.command_queue.front();
+                system_state.command_queue.pop();
+                // Handle command parsing and GPIO zone control logic
+                if (process_watering_command(command)) {
+                    system_state.is_watering = true;
+                }
+
+            // Update the timer for each zone every check_state_interval, close valve if it reaches 0
+            } else if (system_state.is_watering) {
+                for (auto& zone : system_state.zones) {
+                    if (zone.is_open) {
+                        if (zone.timer > 0) {
+                            // If you update the check_state_interval, you must update this too
+                            // since zone.timer is represented in minutes
+                            zone.timer--;
+                        } else {
+                            closeZone(zone);
+                            system_state.is_watering = false;
+                        }
+                    }
+                }
+            }
+
+            // Unlock the system state
+            xSemaphoreGive(system_state.state_mutex);
         }
+        
+        if (do_reconnect_attempt && !wifi_manager_is_connected()) {
            ESP_LOGI(LOOP_LOG_TAG, "WiFi disconnected, attempting to reconnect...");
+           esp_wifi_connect();
         }
 
         // Reset loop_lifetime every day to avoid overflow in long term
