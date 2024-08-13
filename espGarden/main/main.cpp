@@ -14,6 +14,27 @@ void closeZone(WateringZone& zone) {
     ESP_LOGI(GARDEN_LOG_TAG, "Closed zone %s", zone.name.c_str());
 }
 
+bool process_watering_command(const std::string& command) {
+    // Command is verified by having a colon (dangerous)
+    size_t delimiter_pos = command.find(':');
+    if (delimiter_pos != std::string::npos) {
+        int zone_number = std::stoi(command.substr(0, delimiter_pos));
+        int time = std::stoi(command.substr(delimiter_pos + 1));
+
+        // Verify correct zone number
+        if (zone_number >= 1 && zone_number <= system_state.zones.size()) {
+            WateringZone& zone = system_state.zones[zone_number - 1];  // Zone index
+            zone.timer = time;
+            openZone(zone);
+            return true;
+        } else {
+            ESP_LOGE(GARDEN_LOG_TAG, "Attempted to process invalid zone number: %d", zone_number);
+        }
+    } else {
+        ESP_LOGE(GARDEN_LOG_TAG, "Attempted to process invalid command format: %s", command.c_str());
+    }
+    return false;
+}
 
 extern "C" void app_main() {
     heltec_setup(); // Main Setup
