@@ -330,21 +330,59 @@ void display_stats() {
     wifi_manager_get_ip(ip);
 
     int32_t rssi = wifi_manager_get_rssi();
-    float temperature = heltec_temperature();
     const int text_size = 12;
-    // Create strings with variables
-    std::string watering_status = "Water: Test";
-    std::string connection_status = "Connected: " + std::to_string(wifi_manager_is_connected());
+
+    xSemaphoreTake(system_state.state_mutex, portMAX_DELAY);
+
+    // Watering status
+    std::string watering_status = "Waiting...";
+    if (system_state.is_watering) {
+        watering_status = "Watering ";
+        for (WateringZone& zone : system_state.zones) {
+            if (zone.is_open) {
+                if (zone.timer == 0) {
+                    watering_status += zone.name + " < 1  mins";
+                } else {
+                    watering_status += zone.name + " " + std::to_string(zone.timer) + " mins";
+                }
+                break;
+            }
+        }
+    }
+
+    // Queue status
+    std::string queue_status;
+    if (!system_state.command_queue.empty()) {
+        std::queue<std::string> temp_queue = system_state.command_queue;
+        int count = 0;
+        while (!temp_queue.empty() && count < 2) {
+            if (count > 0) {
+                queue_status += ", ";
+            }
+            queue_status += temp_queue.front();
+            temp_queue.pop();
+            count++;
+        }
+        if (!temp_queue.empty()) {
+            queue_status += "...";
+        }
+    } else {
+        queue_status = "Empty";
+    }
+
+    xSemaphoreGive(system_state.state_mutex);
+
+    // Display strings on the OLED
+    std::string watering_display = watering_status;
+    std::string queue_display = "Q: " + queue_status;
     std::string ip_status = std::string("IP: ") + ip;
     std::string rssi_status = "RSSI: " + std::to_string(rssi);
-    std::string temperature_status = "Temp: " + std::to_string(temperature);
 
     ssd1306_clear_screen(display, 0x00);
-    ssd1306_draw_string(display, 0, 0, (const uint8_t *)watering_status.c_str(), text_size, 1);
-    ssd1306_draw_string(display, 0, 16, (const uint8_t *)connection_status.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 0,  (const uint8_t *)watering_display.c_str(), text_size, 1);
+    ssd1306_draw_string(display, 0, 16, (const uint8_t *)queue_display.c_str(), text_size, 1);
     ssd1306_draw_string(display, 0, 32, (const uint8_t *)ip_status.c_str(), text_size, 1);
     ssd1306_draw_string(display, 0, 48, (const uint8_t *)rssi_status.c_str(), text_size, 1);
-    ssd1306_draw_string(display, 0, 64, (const uint8_t *)temperature_status.c_str(), text_size, 1);
     ssd1306_refresh_gram(display);
 }
 
