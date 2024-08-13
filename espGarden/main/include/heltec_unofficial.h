@@ -185,10 +185,12 @@ void heltec_led(int percent);
 float heltec_temperature();
 bool heltec_wakeup_was_timer();
 
+void init_mutex();
 void init_nvs();
 void init_display();
 void init_wifi();
 void init_webserver();
+void init_gpio();
 
 void display_centered_string(const char *str, uint8_t font_size, uint32_t duration_ms);
 void display_stats();
@@ -196,6 +198,14 @@ void log_stats();
 
 //################################################################################//
 // Init functions
+
+void init_mutex() {
+    // Initialize the mutex for the system state
+    system_state.state_mutex = xSemaphoreCreateMutex();
+    if (system_state.state_mutex == NULL) {
+        ESP_LOGE(GARDEN_LOG_TAG, "Failed to create state mutex");
+    }
+}
 
 void init_nvs(){
     // Initialize NVS
@@ -248,7 +258,9 @@ void init_wifi() {
     ESP_ERROR_CHECK(wifi_start());
 
     while (!wifi_manager_is_connected()) {
-        ESP_LOGI(GARDEN_LOG_TAG, "Waiting for WiFi connection setup...");
+        const char* waiting_message = "Waiting for WiFi connection setup...";
+        display_centered_string(waiting_message, 12, 0);
+        ESP_LOGI(GARDEN_LOG_TAG, "%s", waiting_message);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 } 
@@ -259,6 +271,21 @@ void init_webserver(){
         ESP_LOGI(HTTP_LOG_TAG, "Failed to start web server!");
     } else {
         ESP_LOGI(HTTP_LOG_TAG, "Web server started!");
+    }
+}
+
+void init_gpio(){
+    // Setup GPIO
+    gpio_config_t GPIOConfig = {
+        .pin_bit_mask = (uint64_t)0xF0,
+        .mode = GPIO_MODE_OUTPUT_OD,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
+    };
+
+    if (gpio_config(&GPIOConfig) != ESP_OK) {
+        ESP_LOGI(GARDEN_LOG_TAG, "Critical GPIO Error");
     }
 }
 
