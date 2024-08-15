@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/style.css';
+const durations = [5, 10, 15, 30, 60, 120, 180, 240];
 
 const generateTimeSlots = () => {
     const timeSlots = [];
@@ -196,6 +197,9 @@ const Weather = () => {
         return <div className="error-message">Error fetching data: {error.message}</div>;
     }
 
+    const zones = ['1', '2', '3', '4', 'All'];
+    const times = generateTimeSlots();
+
     return (
         <div className="weather-container">
             {currentWeather && (
@@ -224,8 +228,7 @@ const Weather = () => {
                 <div className="dropdown-container">
                     <div>
                         <label htmlFor="zone-select">Select Zone:</label>
-                        <select id="zone-select" defaultValue={defaultZone} onChange={handleZoneSelect}>
-                            <option value="" disabled>Select a zone</option>
+                        <select id="zone-select" value={selectedZone} onChange={handleZoneSelect}>
                             {zones.map((zone, index) => (
                                 <option key={index} value={zone}>
                                     {zone}
@@ -234,12 +237,21 @@ const Weather = () => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="hour-select">Select Hour:</label>
-                        <select id="hour-select" defaultValue={selectedHour} onChange={handleHourSelect}>
-                            <option value="" disabled>Select an hour</option>
-                            {hours.map((hourObj, index) => (
-                                <option key={index} value={hourObj.label} disabled={hourObj.disabled}>
-                                    {hourObj.label}
+                        <label htmlFor="time-select">Select Time:</label>
+                        <select id="time-select" value={selectedTime} onChange={handleTimeSelect}>
+                            {times.map((timeObj, index) => (
+                                <option key={index} value={timeObj.label}>
+                                    {timeObj.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="duration-select">Select Duration:</label>
+                        <select id="duration-select" value={selectedDuration} onChange={handleDurationSelect}>
+                            {durations.map((duration, index) => (
+                                <option key={index} value={duration}>
+                                    {duration} minutes
                                 </option>
                             ))}
                         </select>
@@ -247,6 +259,46 @@ const Weather = () => {
                     <button onClick={handleWaterPlants} className="water-button">
                         {isWatering ? 'Watering...' : 'Water Plants'}
                     </button>
+                </div>
+            </div>
+            <div>
+                <h2>Status</h2>
+                <div className="status-container">
+                    <div className="connection-status">
+                        <div>{data.espStatus?.connected ? 'Connected to ESP' : 'ESP is not reachable'}</div>
+                    </div>
+                    {data.espStatus?.connected && (
+                        <>
+                            <div className="current-zone-status">
+                                <h3>Current Zone</h3>
+                                <div>{data.espStatus?.currentZone ? `Zone: ${data.espStatus.currentZone}` : 'No zone is currently being watered'}</div>
+                                <div>{data.espStatus?.currentTimer ? `Time: ${data.espStatus.currentTimer} minutes remaining` : ''}</div>
+                            </div>
+                            <div className="queue-status">
+                                <h3>ESP Queue</h3>
+                                <div>{data.espStatus?.queue.length > 0 ? data.espStatus.queue.join(', ') : 'No commands in ESP queue'}</div>
+                            </div>
+                        </>
+                    )}
+                    <div className="queue-status">
+                        <h3>Scheduled Watering Queue</h3>
+                        <div className="local-queue">
+                            {data.queue.length > 0 ? (
+                                data.queue.map((item, index) => (
+                                    <div key={index} className="queue-item">
+                                        <span>{`Time: ${new Date(item.scheduledTime).toLocaleTimeString()}`}</span>
+                                        <span>{` | Zone: ${item.zone}`}</span>
+                                        <span>{` | Duration: ${item.duration} minutes  |  `}</span>
+                                        <button className="remove-button" onClick={() => handleRemoveTask(index)}>
+                                            <span role="img" aria-label="trash can">🗑️</span>
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <div>No commands in queue</div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
