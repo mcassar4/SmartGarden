@@ -3,7 +3,6 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { WebSocketServer } = require('ws');
-// const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.use(cors());
@@ -13,6 +12,7 @@ let wateringQueue = []; // In-memory storage for the queue
 let espStatus = {}; // In-memory storage for the ESP status
 
 const API_ESP_TX = 'http://172.20.10.9/esp_tx'; // Replace with your actual ESP TX endpoint
+const API_ESP_RX = 'http://172.20.10.9/esp_rx'; // Endpoint for sending commands to ESP
 
 // WebSocket Server for real-time updates
 const wss = new WebSocketServer({ noServer: true });
@@ -34,15 +34,6 @@ const broadcastToClients = () => {
     });
 };
 
-// // Rate Limiting Middleware
-// const limiter = rateLimit({
-//     windowMs: 250, // 500ms
-//     max: 1, // Limit each IP to 1 request per 500ms
-//     message: 'Too many requests, please try again later.'
-// });
-
-// app.use(limiter);
-
 // Function to poll ESP status
 const fetchESPStatus = async () => {
     try {
@@ -56,18 +47,48 @@ const fetchESPStatus = async () => {
     }
 };
 
+// Function to process the watering queue
+const processWateringQueue = async () => {
+    const now = new Date();
+    for (const task of wateringQueue) {
+        const scheduledTime = new Date(task.scheduledTime);
+        if (scheduledTime <= now) {
+            try {
+                const command = `${task.zone}:${task.duration}`;
+                await axios.post(API_ESP_RX, command, { timeout: 5000 });
+                console.log(`Sent command to ESP: ${command}`);
+                
+                // Remove the task from the queue after sending the command
+                wateringQueue = wateringQueue.filter(item => item.id !== task.id);
+                broadcastToClients(); // Notify clients of the updated queue
+            } catch (error) {
+                console.error('Error sending command to ESP:', error);
+            }
+        }
+    }
+};
+
 // Poll ESP status every 5 seconds
 setInterval(fetchESPStatus, 5000);
+
+// Process the watering queue every second
+setInterval(processWateringQueue, 1000);
 
 // Get the combined queue and ESP status
 app.get('/queue', (req, res) => {
     res.json({ queue: wateringQueue, espStatus });
 });
 
+// Function to sort the wateringQueue by scheduledTime
+const sortWateringQueue = () => {
+    wateringQueue.sort((a, b) => new Date(a.scheduledTime) - new Date(b.scheduledTime));
+};
+
 // Add a new task to the queue
 app.post('/queue', (req, res) => {
     const task = { ...req.body, id: uuidv4() }; // Assign a unique ID
     wateringQueue.push(task);
+    sortWateringQueue(); // Sort the queue after adding a new task
     res.status(201).json(task);
     broadcastToClients(); // Notify all clients of the new task
 });
@@ -76,6 +97,7 @@ app.post('/queue', (req, res) => {
 app.delete('/queue/:id', (req, res) => {
     const { id } = req.params;
     wateringQueue = wateringQueue.filter(task => task.id !== id);
+    sortWateringQueue(); // Sort the queue after removing a task
     res.status(204).end();
     broadcastToClients(); // Notify all clients of the removed task
 });
