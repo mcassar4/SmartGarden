@@ -2,25 +2,32 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/style.css';
 
-const generateHours = () => {
-    const hours = [];
-    const currentHour = new Date().getHours();
-    const currentPeriod = currentHour < 12 ? 'AM' : 'PM';
+const generateTimeSlots = () => {
+    const timeSlots = [];
+    const now = new Date();
 
-    for (let i = 0; i < 24; i++) {
-        const hour = i % 12 === 0 ? 12 : i % 12;
-        const period = i < 12 ? 'AM' : 'PM';
-        const isDisabled = i < currentHour || (i === currentHour && period === currentPeriod);
-        const hourLabel = `${hour}:00 ${period}`;
+    const roundedMinutes = Math.ceil(now.getMinutes() / 15) * 15;
+    const nextSlot = new Date(now);
+    nextSlot.setMinutes(roundedMinutes);
+    nextSlot.setSeconds(0);
+    nextSlot.setMilliseconds(0);
 
-        if (i === currentHour + 1) {
-            hours.push({ label: 'Now', disabled: false });
+    timeSlots.push({ label: 'Now', value: now });
+
+    for (let i = 0; i < 48; i++) {  
+        const futureTime = new Date(nextSlot.getTime() + i * 15 * 60 * 1000);
+        if (futureTime.getTime() <= now.getTime()) {
+            continue;  
         }
-        hours.push({ label: hourLabel, disabled: isDisabled });
+        const hours = futureTime.getHours() % 12 === 0 ? 12 : futureTime.getHours() % 12;
+        const minutes = futureTime.getMinutes().toString().padStart(2, '0');
+        const period = futureTime.getHours() < 12 ? 'AM' : 'PM';
+        const label = `${hours}:${minutes} ${period}`;
+        timeSlots.push({ label, value: futureTime });
     }
-    return hours;
-};
 
+    return timeSlots;
+};
 
 const getCurrentHourPlusOne = () => {
     const date = new Date();
