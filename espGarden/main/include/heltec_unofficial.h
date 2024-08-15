@@ -284,6 +284,11 @@ void init_gpio(){
         .intr_type = GPIO_INTR_DISABLE
     };
 
+    // Set default zone close on init
+    for (WateringZone& zone : system_state.zones) {
+        gpio_set_level((gpio_num_t)zone.pin, HIGH);
+    }
+
     if (gpio_config(&GPIOConfig) != ESP_OK) {
         ESP_LOGI(GARDEN_LOG_TAG, "Critical GPIO Error");
     }
