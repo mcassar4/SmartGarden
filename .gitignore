@@ -1,8 +1,5 @@
 # Ignore all .log files
-# *.log
-
-# Ignore all node_modules directories
-# node_modules/
+*.log
 
 # Ignore all .env files
 .env
@@ -11,8 +8,11 @@
 .DS_Store
 
 # Ignore specific file
-# /path/to/file.txt
+/espGarden/.vscode
 
 # Ignore all files in a directory
-espGarden/.gitignore
-espGarden/build
+/Webpage/webpage/build
+/Webpage/webpage/node_modules
+/Webpage/backend/build
+/Webpage/backend/node_modules
+/espGarden/build
