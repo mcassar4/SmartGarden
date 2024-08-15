@@ -53,39 +53,16 @@ const Weather = () => {
     const latitude = 43.39141047955725;
     const longitude = -79.76961512140457;
 
-    useEffect(() => {
-
-        const fetchWeatherData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=precipitation_probability,temperature_2m&current_weather=true&timezone=auto&past_days=1&forecast_days=1`);
-                const data = response.data;
-                const times = data.hourly.time;
-                const precipitation = data.hourly.precipitation_probability;
-                const today = new Date().toISOString().split('T')[0];
-                const rainData = times.map((time, index) => ({
-                    time,
-                    precipitation: precipitation[index]
-                })).filter(item => item.time.startsWith(today));
-
-                setRainData(rainData);
-                setCurrentWeather(data.current_weather);
-
-                const currentHour = new Date().getHours();
-                const currentPrecipitation = rainData.find(item => new Date(item.time).getHours() === currentHour);
-                setCurrentPrecipitation(currentPrecipitation ? currentPrecipitation.precipitation : null);
-
-                setLoading(false);
-            } catch (error) {
-                setError(error);
-                setLoading(false);
-            }
-        };
-
-        fetchWeatherData();
-
-        checkPrecipitationAtMidnight();
-
+    const fetchCache = useCallback(async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/queue`);
+            setData(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching cache:', error);
+            setError(error);
+            setLoading(false);
+        }
     }, []);
 
     const fetchWeatherData = useCallback(async () => {
