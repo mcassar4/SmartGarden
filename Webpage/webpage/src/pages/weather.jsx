@@ -205,8 +205,17 @@ const Weather = () => {
         setSelectedZone(e.target.value);
     };
 
-    const handleHourSelect = (e) => {
-        setSelectedHour(e.target.value);
+    const handleTimeSelect = (e) => {
+        setSelectedTime(e.target.value === 'Now' ? 'Now' : e.target.value);
+    };
+
+    const handleDurationSelect = (e) => {
+        setSelectedDuration(parseInt(e.target.value, 10));
+    };
+
+    const handleRemoveTask = async (index) => {
+        const task = data.queue[index];
+        await removeFromQueue(task.id);
     };
 
     if (loading) {
