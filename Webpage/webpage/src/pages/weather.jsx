@@ -88,57 +88,49 @@ const Weather = () => {
 
     }, []);
 
-    const checkPrecipitationAtMidnight = () => {
-        const now = new Date();
-        const midnight = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1,
-            0, 0, 0, 0
-        );
-
-        const timeUntilMidnight = midnight.getTime() - now.getTime();
-
-        setTimeout(async () => {
-            await performMidnightCheck();
-            setInterval(performMidnightCheck, 24 * 60 * 60 * 1000);
-        }, timeUntilMidnight);
-    };
-
-    const performMidnightCheck = async () => {
+    const fetchWeatherData = useCallback(async () => {
         try {
-            const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
+            const response = await axios.get(`https://api.open-meteo.com/v1/forecast`, {
                 params: {
-                    latitude: 43.39141047955725,
-                    longitude: -79.76961512140457,
-                    hourly: 'precipitation_probability',
+                    latitude: latitude,
+                    longitude: longitude,
+                    hourly: 'precipitation_probability,temperature_2m',
+                    current_weather: true,
+                    timezone: 'auto',
+                    past_days: 1,
                     forecast_days: 1,
-                    timezone: 'auto'
                 }
             });
-
             const data = response.data;
             const times = data.hourly.time;
             const precipitation = data.hourly.precipitation_probability;
+            const today = new Date().toISOString().split('T')[0];
+            const filteredRainData = times.map((time, index) => ({
+                time,
+                precipitation: precipitation[index]
+            })).filter(item => item.time.startsWith(today));
 
-            const eightAMIndex = times.findIndex(time => new Date(time).getHours() === 8);
+            setRainData(filteredRainData);
+            setCurrentWeather(data.current_weather);
 
-            if (eightAMIndex !== -1) {
-                const precipitationAtEightAM = precipitation[eightAMIndex];
+            const currentHour = new Date().getHours();
+            const currentPrecipitation = filteredRainData.find(item => new Date(item.time).getHours() === currentHour);
+            setCurrentPrecipitation(currentPrecipitation ? currentPrecipitation.precipitation : null);
 
-                if (precipitationAtEightAM < 50) {
-                    console.log('Precipitation is below 50%. Watering plants now.');
-                    setSelectedHour('Now');
-                    setSelectedZone('All');
-                    await executeWatering();
-                } else {
-                    console.log('Precipitation is above 50%. No watering needed.');
-                }
-            } else {
-                console.error('Could not find 8:00 AM in the forecast data.');
-            }
+            setLoading(false);
         } catch (error) {
-            console.error('Error fetching precipitation data:', error);
+            console.error('Error fetching weather data:', error);
+            setError(error);
+            setLoading(false);
+        }
+    }, [latitude, longitude]);
+
+    const addToQueue = async (task) => {
+        try {
+            await axios.post(`${API_BASE_URL}/queue`, task);
+            fetchCache(); // Immediately fetch the updated cache after adding
+        } catch (error) {
+            console.error('Error adding to queue:', error);
         }
     };
 
