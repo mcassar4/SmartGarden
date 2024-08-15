@@ -3,13 +3,13 @@
 #include "system_state.h"
 
 void openZone(WateringZone& zone) {
-    gpio_set_level((gpio_num_t)zone.pin, HIGH);
+    gpio_set_level((gpio_num_t)zone.pin, LOW);
     zone.is_open = true;
     ESP_LOGI(GARDEN_LOG_TAG, "Opened zone %s for %d minutes", zone.name.c_str(), zone.timer);
 }
 
 void closeZone(WateringZone& zone) {
-    gpio_set_level((gpio_num_t)zone.pin, LOW);
+    gpio_set_level((gpio_num_t)zone.pin, HIGH);
     zone.is_open = false;
     ESP_LOGI(GARDEN_LOG_TAG, "Closed zone %s", zone.name.c_str());
 }
