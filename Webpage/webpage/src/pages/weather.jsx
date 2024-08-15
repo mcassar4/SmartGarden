@@ -29,13 +29,25 @@ const generateTimeSlots = () => {
     return timeSlots;
 };
 
-const getCurrentHourPlusOne = () => {
-    const date = new Date();
-    let nextHour = date.getHours() + 1;
-    if (nextHour >= 24) nextHour = 0;
-    const hour = nextHour % 12 === 0 ? 12 : nextHour % 12;
-    const period = nextHour < 12 ? 'AM' : 'PM';
-    return `${hour}:00 ${period}`;
+const parseTimeString = (timeString) => {
+    const [time, modifier] = timeString.split(' '); 
+    let [hours, minutes] = time.split(':');
+
+    if (modifier === 'PM' && hours !== '12') {
+        hours = parseInt(hours, 10) + 12;
+    }
+    if (modifier === 'AM' && hours === '12') {
+        hours = '00';
+    }
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    return new Date(dateTimeString);
 };
 
 const Weather = () => {
