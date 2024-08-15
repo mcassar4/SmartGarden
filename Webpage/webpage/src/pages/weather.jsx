@@ -134,31 +134,27 @@ const Weather = () => {
         }
     };
 
-    const executeWatering = async () => {
-        const sendWaterRequest = async (zone) => {
-            const min = zone === 2 ? 80 : 70;
-            const data = `${zone}:${min}`;
-            console.log("Data sending: " + data);
-            try {
-                await axios.post('http://172.20.10.11/esp_rx', data).then((response) => {
-                    if (!response.data || response.data !== 'rec') {
-                        console.log('No response from ESP');
-                    }
-                    console.log('Data sent successfully:', response.data);
-                });
-            } catch (error) {
-                console.error('Error watering plants:', error);
-            }
-        };
-
-        if (selectedZone === 'All') {
-            for (let i = 1; i <= 5; i++) {
-                await sendWaterRequest(i);
-            }
-        } else {
-            await sendWaterRequest(selectedZone);
+    const removeFromQueue = async (id) => {
+        try {
+            await axios.delete(`${API_BASE_URL}/queue/${id}`);
+            fetchCache(); // Immediately fetch the updated cache after removing
+        } catch (error) {
+            console.error('Error removing from queue:', error);
         }
     };
+
+    useEffect(() => {
+        fetchCache();
+        fetchWeatherData();
+
+        const cacheIntervalId = setInterval(fetchCache, 1000); // Fetch the cache every 1 second
+        const weatherIntervalId = setInterval(fetchWeatherData, 60000); 
+
+        return () => {
+            clearInterval(cacheIntervalId);
+            clearInterval(weatherIntervalId);
+        };
+    }, [fetchCache, fetchWeatherData]);
 
     const handleWaterPlants = async () => {
         setIsWatering(true);
