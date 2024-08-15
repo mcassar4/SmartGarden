@@ -39,14 +39,16 @@ const getCurrentHourPlusOne = () => {
 };
 
 const Weather = () => {
-    const [rainData, setRainData] = useState([]);
+    const [data, setData] = useState({});
     const [isWatering, setIsWatering] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedZone, setSelectedZone] = useState('All');
+    const [selectedTime, setSelectedTime] = useState(generateTimeSlots()[0].label);
+    const [selectedDuration, setSelectedDuration] = useState(durations[0]);
+    const [rainData, setRainData] = useState([]);
     const [currentWeather, setCurrentWeather] = useState(null);
     const [currentPrecipitation, setCurrentPrecipitation] = useState(null);
-    const [selectedZone, setSelectedZone] = useState('All');
-    const [selectedHour, setSelectedHour] = useState(getCurrentHourPlusOne());
 
     const latitude = 43.39141047955725;
     const longitude = -79.76961512140457;
