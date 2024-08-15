@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import '../styles/style.css';
+
+const API_BASE_URL = 'http://localhost:5000'; // Update with your server URL
+
 const durations = [5, 10, 15, 30, 60, 120, 180, 240];
 
 const generateTimeSlots = () => {
