@@ -162,44 +162,29 @@ const Weather = () => {
 
     const handleWaterPlants = async () => {
         setIsWatering(true);
-        if (selectedHour === 'Now') {
-            console.log('Watering now');
-            setIsWatering(false);
-            await executeWatering();
+
+        let selectedTimeDate;
+
+        if (selectedTime === 'Now') {
+            selectedTimeDate = new Date();
         } else {
-            setIsWatering(false);
-            console.log('Watering will start at', selectedHour);
-            const selectedHourDate = new Date();
-            const [hour, period] = selectedHour.split(' ');
-            selectedHourDate.setHours(
-                period === 'AM' ? parseInt(hour, 10) % 12 : parseInt(hour, 10) % 12 + 12,
-                0,
-                0,
-                0
-            );
-
-            const delay = selectedHourDate.getTime() - new Date().getTime();
-            if (delay > 0) {
-                await new Promise(resolve => setTimeout(resolve, delay));
+            selectedTimeDate = parseTimeString(selectedTime);
+            if (isNaN(selectedTimeDate.getTime())) {
+                console.error('Invalid time selected:', selectedTime);
+                setIsWatering(false);
+                return;
             }
-            await executeWatering();
         }
+
+        const newTask = {
+            zone: selectedZone,
+            duration: selectedDuration,
+            scheduledTime: selectedTimeDate.toISOString(),
+        };
+
+        await addToQueue(newTask);
+        setIsWatering(false);
     };
-
-    // This is for get request
-    // try {
-    //     axios.get('http://172.20.10.11/esp_tx').then((response) => {
-    //         console.log(JSON.stringify(response.data['key1']));
-    //         setIsWatering(false);
-    //     });
-    // } catch (error) {
-    //     console.error('Error watering plants:', error);
-    //     setIsWatering(false);
-    // }
-
-    const zones = ['1', '2', '3', '4', '5', 'All'];
-    const hours = generateHours();
-    const defaultZone = 'All';
 
     const handleZoneSelect = (e) => {
         setSelectedZone(e.target.value);
