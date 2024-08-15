@@ -35,7 +35,7 @@ bool add_watering_command_to_queue(std::string wateringCommand) {
         try {
             // Maximum number of hours for a zone to be open is 4
             // Minimum number of minutes for a zone to be open is 1 minute
-            if (std::stoi(time_str) > 4*60 && std::stoi(time_str) < 1) {
+            if (std::stoi(time_str) > 4*60 || std::stoi(time_str) < 1) {
                 ESP_LOGE(HTTP_LOG_TAG, "Watering time invalid! %s.", wateringCommand.c_str());
                 return false;
             }
