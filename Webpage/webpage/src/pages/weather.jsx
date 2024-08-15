@@ -21,7 +21,7 @@ const generateTimeSlots = () => {
     for (let i = 0; i < 48; i++) {  
         const futureTime = new Date(nextSlot.getTime() + i * 15 * 60 * 1000);
         if (futureTime.getTime() <= now.getTime()) {
-            continue;  
+            continue;
         }
         const hours = futureTime.getHours() % 12 === 0 ? 12 : futureTime.getHours() % 12;
         const minutes = futureTime.getMinutes().toString().padStart(2, '0');
@@ -34,7 +34,7 @@ const generateTimeSlots = () => {
 };
 
 const parseTimeString = (timeString) => {
-    const [time, modifier] = timeString.split(' '); 
+    const [time, modifier] = timeString.split(' ');
     let [hours, minutes] = time.split(':');
 
     if (modifier === 'PM' && hours !== '12') {
@@ -46,7 +46,7 @@ const parseTimeString = (timeString) => {
 
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
 
     const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
@@ -121,7 +121,7 @@ const Weather = () => {
     const addToQueue = async (task) => {
         try {
             await axios.post(`${API_BASE_URL}/queue`, task);
-            fetchCache(); // Immediately fetch the updated cache after adding
+            fetchCache();
         } catch (error) {
             console.error('Error adding to queue:', error);
         }
@@ -130,7 +130,7 @@ const Weather = () => {
     const removeFromQueue = async (id) => {
         try {
             await axios.delete(`${API_BASE_URL}/queue/${id}`);
-            fetchCache(); // Immediately fetch the updated cache after removing
+            fetchCache();
         } catch (error) {
             console.error('Error removing from queue:', error);
         }
@@ -140,8 +140,8 @@ const Weather = () => {
         fetchCache();
         fetchWeatherData();
 
-        const cacheIntervalId = setInterval(fetchCache, 1000); // Fetch the cache every 1 second
-        const weatherIntervalId = setInterval(fetchWeatherData, 60000); 
+        const cacheIntervalId = setInterval(fetchCache, 1000);
+        const weatherIntervalId = setInterval(fetchWeatherData, 60000);
 
         return () => {
             clearInterval(cacheIntervalId);
@@ -191,6 +191,9 @@ const Weather = () => {
         const task = data.queue[index];
         await removeFromQueue(task.id);
     };
+
+    // Updated check for ESP status
+    const isESPConnected = data?.espStatus && Object.keys(data.espStatus).length > 0;
 
     if (loading) {
         return <div className="loading-spinner">Loading...</div>;
@@ -268,18 +271,25 @@ const Weather = () => {
                 <h2>Status</h2>
                 <div className="status-container">
                     <div className="connection-status">
-                        <div>{data.espStatus?.connected ? 'Connected to ESP' : 'ESP is not reachable'}</div>
+                        <div>{isESPConnected ? 'Connected to ESP' : 'ESP is not reachable'}</div>
                     </div>
-                    {data.espStatus?.connected && (
+                    {isESPConnected && (
                         <>
                             <div className="current-zone-status">
                                 <h3>Current Zone</h3>
-                                <div>{data.espStatus?.currentZone ? `Zone: ${data.espStatus.currentZone}` : 'No zone is currently being watered'}</div>
-                                <div>{data.espStatus?.currentTimer ? `Time: ${data.espStatus.currentTimer} minutes remaining` : ''}</div>
+                                <div>
+                                    {data.espStatus.is_watering ? (
+                                        Object.keys(data.espStatus).filter(zone => zone.startsWith('Z') && data.espStatus[zone].is_open).map(zone => (
+                                            <div key={zone}>{`Zone: ${zone.replace('Z', '')} | ${data.espStatus[zone].timer} minutes remaining`}</div>
+                                        ))
+                                    ) : (
+                                        'No zone is currently being watered'
+                                    )}
+                                </div>
                             </div>
                             <div className="queue-status">
                                 <h3>ESP Queue</h3>
-                                <div>{data.espStatus?.queue.length > 0 ? data.espStatus.queue.join(', ') : 'No commands in ESP queue'}</div>
+                                <div>{data.espStatus.queue?.length > 0 ? data.espStatus.queue.join(', ') : 'No commands in ESP queue'}</div>
                             </div>
                         </>
                     )}
