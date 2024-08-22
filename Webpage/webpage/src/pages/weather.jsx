@@ -18,7 +18,7 @@ const generateTimeSlots = () => {
 
     timeSlots.push({ label: 'Now', value: now });
 
-    for (let i = 0; i < 48; i++) {  
+    for (let i = 0; i < 48; i++) {
         const futureTime = new Date(nextSlot.getTime() + i * 15 * 60 * 1000);
         if (futureTime.getTime() <= now.getTime()) {
             continue;
@@ -76,7 +76,7 @@ const Weather = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching cache:', error);
-            setError(error);
+            // setError(error);
             setLoading(false);
         }
     }, []);
@@ -200,103 +200,48 @@ const Weather = () => {
     }
 
     if (error) {
-        return <div className="error-message">Error fetching data: {error.message}</div>;
+        return <div className="error-message">{error.message}</div>;
     }
 
     const zones = ['1', '2', '3', '4', 'All'];
     const times = generateTimeSlots();
 
     return (
-        <div className="weather-container">
-            {currentWeather && (
-                <div className="current-weather-container">
-                    <h2>Current Weather</h2>
-                    <div>Temperature: {currentWeather.temperature}°C</div>
-                    {currentPrecipitation !== null && (
-                        <div>Precipitation Probability: {currentPrecipitation}%</div>
-                    )}
-                </div>
-            )}
-            <div className="rain-data-container">
-                {rainData.length > 0 ? (
-                    rainData.map((item, index) => (
-                        <div key={index} className="rain-data-item">
-                            <div>{new Date(item.time).getHours()}:00</div>
-                            <div>{item.precipitation}%</div>
-                        </div>
-                    ))
-                ) : (
-                    <div>No rain expected today.</div>
-                )}
-            </div>
-            <div>
-                <h2>Manual Water Plant Control</h2>
-                <div className="dropdown-container">
-                    <div>
-                        <label htmlFor="zone-select">Select Zone:</label>
-                        <select id="zone-select" value={selectedZone} onChange={handleZoneSelect}>
-                            {zones.map((zone, index) => (
-                                <option key={index} value={zone}>
-                                    {zone}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="time-select">Select Time:</label>
-                        <select id="time-select" value={selectedTime} onChange={handleTimeSelect}>
-                            {times.map((timeObj, index) => (
-                                <option key={index} value={timeObj.label}>
-                                    {timeObj.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="duration-select">Select Duration:</label>
-                        <select id="duration-select" value={selectedDuration} onChange={handleDurationSelect}>
-                            {durations.map((duration, index) => (
-                                <option key={index} value={duration}>
-                                    {duration} minutes
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <button onClick={handleWaterPlants} className="water-button">
-                        {isWatering ? 'Watering...' : 'Water Plants'}
-                    </button>
-                </div>
-            </div>
-            <div>
-                <h2>Status</h2>
-                <div className="status-container">
+        <div className="container">
+            <div className="status-manual-container">
+                <div className='status-container'>
+                    <h3>Status</h3>
                     <div className="connection-status">
                         <div>{isESPConnected ? 'Connected to ESP' : 'ESP is not reachable'}</div>
                     </div>
                     {isESPConnected && (
                         <>
-                            <div className="current-zone-status">
-                                <h3>Current Zone</h3>
-                                <div>
-                                    {data.espStatus.is_watering ? (
-                                        Object.keys(data.espStatus).filter(zone => zone.startsWith('Z') && data.espStatus[zone].is_open).map(zone => (
-                                            <div key={zone}>{`Zone: ${zone.replace('Z', '')} | ${data.espStatus[zone].timer} minutes remaining`}</div>
-                                        ))
-                                    ) : (
-                                        'No zone is currently being watered'
-                                    )}
+                            <div className="status-flex-container">
+                                <div className="current-zone-status">
+                                    <h3>Current Zone</h3>
+                                    <div>
+                                        {data.espStatus.is_watering ? (
+                                            Object.keys(data.espStatus)
+                                                .filter(zone => zone.startsWith('Z') && data.espStatus[zone].is_open)
+                                                .map(zone => (
+                                                    <div key={zone}>{`Zone: ${zone.replace('Z', '')} | ${data.espStatus[zone].timer} minutes remaining`}</div>
+                                                ))
+                                        ) : (
+                                            'No zone is currently being watered'
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="queue-status">
-                                <h3>ESP Queue</h3>
-                                <div>{data.espStatus.queue?.length > 0 ? data.espStatus.queue.join(', ') : 'No commands in ESP queue'}</div>
+                                <div className="queue-status">
+                                    <h3>ESP Queue</h3>
+                                    <div>{data.espStatus.queue?.length > 0 ? data.espStatus.queue.join(', ') : 'No commands in ESP queue'}</div>
+                                </div>
                             </div>
                         </>
                     )}
                     <div className="queue-status">
                         <h3>Scheduled Watering Queue</h3>
                         <div className="local-queue">
-                            {data.queue.length > 0 ? (
+                            {data.queue?.length > 0 ? (
                                 data.queue.map((item, index) => (
                                     <div key={index} className="queue-item">
                                         <span>{`Time: ${new Date(item.scheduledTime).toLocaleTimeString()}`}</span>
@@ -312,6 +257,67 @@ const Weather = () => {
                             )}
                         </div>
                     </div>
+                </div>
+                <div className='manual-water-container'>
+                    <h2>Manual Water Plant Control</h2>
+                    <div className="dropdown-container">
+                        <div>
+                            <label htmlFor="zone-select">Select Zone:</label>
+                            <select id="zone-select" value={selectedZone} onChange={handleZoneSelect}>
+                                {zones.map((zone, index) => (
+                                    <option key={index} value={zone}>
+                                        {zone}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="time-select">Select Time:</label>
+                            <select id="time-select" value={selectedTime} onChange={handleTimeSelect}>
+                                {times.map((timeObj, index) => (
+                                    <option key={index} value={timeObj.label}>
+                                        {timeObj.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="duration-select">Select Duration:</label>
+                            <select id="duration-select" value={selectedDuration} onChange={handleDurationSelect}>
+                                {durations.map((duration, index) => (
+                                    <option key={index} value={duration}>
+                                        {duration} minutes
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button onClick={handleWaterPlants} className="water-button">
+                            {isWatering ? 'Watering...' : 'Water Plants'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className='weather-info-container'>
+                {currentWeather && (
+                    <div className="current-weather-container">
+                        <h2>Current Weather</h2>
+                        <div>Temperature: {currentWeather.temperature}°C</div>
+                        {currentPrecipitation !== null && (
+                            <div>Precipitation Probability: {currentPrecipitation}%</div>
+                        )}
+                    </div>
+                )}
+                <div className="rain-data-container">
+                    {rainData.length > 0 ? (
+                        rainData.map((item, index) => (
+                            <div key={index} className="rain-data-item">
+                                <div>{new Date(item.time).getHours()}:00</div>
+                                <div>{item.precipitation}%</div>
+                            </div>
+                        ))
+                    ) : (
+                        <div>No rain expected today.</div>
+                    )}
                 </div>
             </div>
         </div>

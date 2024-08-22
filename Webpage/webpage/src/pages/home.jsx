@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import NavBar from "../components/navBar";
 import Footer from "../components/footer";
 import Weather from "./weather";
 
 const Home = () => {
+    useEffect(() => {
+        document.title = "Evertz SmartGarden";
+    }, []);
     return (
         <div className="App">
             <NavBar />
