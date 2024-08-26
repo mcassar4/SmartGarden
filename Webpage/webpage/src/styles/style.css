@@ -92,6 +92,7 @@ h1 {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding-left: 15px;
+    padding-right: 15px;
     padding-bottom: 15px;
     width: 30%;
     display: flex;
