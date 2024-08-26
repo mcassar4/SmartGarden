@@ -16,7 +16,8 @@ struct SystemState {
         {"Z1", GPIO7, false, 0}, // Zone 1
         {"Z2", GPIO6, false, 0}, // Zone 2
         {"Z3", GPIO5, false, 0}, // Zone 3
-        {"Z4", GPIO4, false, 0}  // Zone 4
+        {"Z4", GPIO4, false, 0}, // Zone 4
+        {"Z5", GPIO3, false, 0}  // Zone 5
     };
     std::queue<std::string> command_queue;
     SemaphoreHandle_t state_mutex;

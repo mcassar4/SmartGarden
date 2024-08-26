@@ -276,8 +276,13 @@ void init_webserver(){
 
 void init_gpio(){
     // Setup GPIO
+    uint64_t gpioMask = 0x0;
+    for (int i = 7; i < 3; i--){    //enable GPIO 7-3 inclusive
+        gpioMask |= 0x1 << i;
+    }
+
     gpio_config_t GPIOConfig = {
-        .pin_bit_mask = (uint64_t)0xF0,
+        .pin_bit_mask = gpioMask,
         .mode = GPIO_MODE_OUTPUT_OD,
         .pull_up_en = GPIO_PULLUP_DISABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
