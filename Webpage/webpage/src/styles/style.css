@@ -1,0 +1,220 @@
+.footer {
+    background-color: #282c34;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.empty-height {
+    height: 50px;
+}
+
+.App {
+    text-align: center;
+}
+
+.App-header {
+    background-color: lightsteelblue;
+    padding: 1px;
+    color: black;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.App-nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.App-nav li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.App-nav a {
+    color: blue;
+    text-decoration: none;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+.App-nav a:hover {
+    color: darkblue;
+}
+
+.App-main section {
+    width: 100%;
+    max-width: 800px;
+}
+
+.image-gallery {
+    width: 100%;
+    max-width: 100%;
+}
+
+h1 {
+    color: #333;
+}
+
+/* Container Styles */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    width: 95%;
+    margin: auto;
+}
+
+.status-manual-container {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.status-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 70%;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.manual-water-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.dropdown-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.status-container h2,
+.status-container h3 {
+    color: #333;
+}
+
+.connection-status {
+    margin-bottom: 15px;
+}
+
+.current-zone-status,
+.queue-status {
+    background: #ffffff;
+    padding: 10px;
+    margin: 5%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.current-zone-status div,
+.queue-status div {
+    margin-top: 10px;
+}
+
+/* Rain Data Scrollable Row */
+.weather-info-container {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.current-weather-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 25%;
+    padding-bottom: 10px;
+}
+
+.rain-data-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 75%;
+}
+
+.rain-data-item {
+    background: #e0f7fa;
+    margin: 0 10px;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Dropdown & Button Styles */
+select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.water-button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.water-button:hover {
+    background: #218838;
+}
+
+/* General Typography */
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Queue Items */
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.remove-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: red;
+}
+
+.remove-button:hover {
+    color: darkred;
+}
