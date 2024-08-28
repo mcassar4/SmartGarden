@@ -203,7 +203,7 @@ const Weather = () => {
         return <div className="error-message">{error.message}</div>;
     }
 
-    const zones = ['1', '2', '3', '4', 'All'];
+    const zones = ['1', '2', '3', '4', '5', 'All'];
     const times = generateTimeSlots();
 
     return (
