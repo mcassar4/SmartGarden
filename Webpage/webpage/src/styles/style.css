@@ -1,10 +1,18 @@
 .footer {
     background-color: #282c34;
     color: white;
+    display: flex;
     position: fixed;
     bottom: 0;
     width: 100%;
     text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-logo {
+    width: 10%;
+    height: 10%;
 }
 
 .empty-height {
