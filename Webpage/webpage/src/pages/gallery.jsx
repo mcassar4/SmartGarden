@@ -44,8 +44,6 @@ const Gallery = () => {
                     />
                 </div>
             </main>
-            <div className='empty-height'></div>
-            <div className='empty-height'></div>
 
             <Footer />
         </div>
