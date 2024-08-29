@@ -57,6 +57,7 @@ const parseTimeString = (timeString) => {
 const Weather = () => {
     const [data, setData] = useState({});
     const [isWatering, setIsWatering] = useState(false);
+    const [isStopping, setIsStopping] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedZone, setSelectedZone] = useState('All');
@@ -175,6 +176,18 @@ const Weather = () => {
         setIsWatering(false);
     };
 
+    const handleStopWaterPlants = async () => {
+        setIsWatering(true);
+
+        const newTask = {
+            zone: "Stop"
+        };
+
+        await addToQueue(newTask);
+        setIsWatering(false);
+    };
+
+
     const handleZoneSelect = (e) => {
         setSelectedZone(e.target.value);
     };
@@ -291,9 +304,14 @@ const Weather = () => {
                                 ))}
                             </select>
                         </div>
-                        <button onClick={handleWaterPlants} className="water-button">
-                            {isWatering ? 'Watering...' : 'Water Plants'}
-                        </button>
+                        <div className="button-container">
+                            <button onClick={handleWaterPlants} className="water-button">
+                                {isWatering ? 'Watering...' : 'Water Plants'}
+                            </button>
+                            <button onClick={handleStopWaterPlants} className="stop-button">
+                                {isStopping ? 'Stopping...' : 'Stop Plants'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

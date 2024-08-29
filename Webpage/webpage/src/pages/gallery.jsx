@@ -44,7 +44,6 @@ const Gallery = () => {
                     />
                 </div>
             </main>
-
             <Footer />
         </div>
     );
