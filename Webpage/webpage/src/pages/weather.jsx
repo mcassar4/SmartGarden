@@ -177,14 +177,14 @@ const Weather = () => {
     };
 
     const handleStopWaterPlants = async () => {
-        setIsWatering(true);
+        setIsStopping(true);
 
         const newTask = {
             zone: "Stop"
         };
 
         await addToQueue(newTask);
-        setIsWatering(false);
+        setIsStopping(false);
     };
 
 
