@@ -16,11 +16,18 @@ struct SystemState {
         {"Z1", GPIO7, false, 0}, // Zone 1
         {"Z2", GPIO6, false, 0}, // Zone 2
         {"Z3", GPIO5, false, 0}, // Zone 3
-        {"Z4", GPIO4, false, 0}  // Zone 4
+        {"Z4", GPIO4, false, 0}, // Zone 4
+        {"Z5", GPIO3, false, 0}  // Zone 5
     };
     std::queue<std::string> command_queue;
     SemaphoreHandle_t state_mutex;
 };
+
+//queue helper function
+void qclear(std::queue<std::string> &queue){
+    std::queue<std::string> empty;
+    std::swap(queue, empty);
+}
 
 static SystemState system_state;
 
@@ -73,6 +80,13 @@ bool add_watering_command_to_queue(std::string wateringCommand) {
 
             }
         }
+    //TODO: change stop command to form [stop:{number}], where number encodes which zones to close.
+    //      this would allow all the stop command processing to be moved main/main.cpp
+    //      ([stop:] as the command format would also allow this but might as well add some functionality)
+    } else if (wateringCommand.compare("stop") >= 0) {    //close all zones on stop command
+        qclear(system_state.command_queue);
+        system_state.command_queue.push("stop");
+        ESP_LOGE(HTTP_LOG_TAG, "Stopped watering and cleared queue from command %s.", wateringCommand.c_str());  
     }   
 
     ESP_LOGE(HTTP_LOG_TAG, "Invalid Command Received %s.", wateringCommand.c_str());

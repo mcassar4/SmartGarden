@@ -30,6 +30,10 @@ bool process_watering_command(const std::string& command) {
         } else {
             ESP_LOGE(GARDEN_LOG_TAG, "Attempted to process invalid zone number: %d", zone_number);
         }
+    } else if (command == "stop"){
+        for (auto& zone : system_state.zones) {
+            closeZone(zone);
+        }
     } else {
         ESP_LOGE(GARDEN_LOG_TAG, "Attempted to process invalid command format: %s", command.c_str());
     }
