@@ -102,8 +102,11 @@ app.delete('/queue/:id', (req, res) => {
     broadcastToClients(); // Notify all clients of the removed task
 });
 
-const server = app.listen(5000, () => {
-    console.log(`Server running on port 5000`);
+const IP_ADDRESS = '192.168.1.100'; // Replace with the IP address you want to bind to
+const PORT = 5000;
+
+const server = app.listen(PORT, IP_ADDRESS, () => {
+    console.log(`Server running on http://${IP_ADDRESS}:${PORT}`);
 });
 
 server.on('upgrade', (request, socket, head) => {
